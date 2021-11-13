@@ -17,7 +17,7 @@ export default class DesignRender extends React.Component {
     // todo: 样式无效
     const { dsl } = this.props;
 
-    utils.renderStyle(JSON.parse(dsl)).map((item) => utils.appendStyle(item));
+    utils.renderStyle(dsl).map((item) => utils.appendStyle(item));
   }
 
   render() {
@@ -25,7 +25,7 @@ export default class DesignRender extends React.Component {
     let parseDSL;
 
     try {
-      parseDSL = JSON.parse(dsl);
+      parseDSL = dsl;
     } catch (error) {
       logger.error("dsl parse err", error);
     }

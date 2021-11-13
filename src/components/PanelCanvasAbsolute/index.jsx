@@ -85,7 +85,7 @@ class PanelCanvasAbsolute extends React.Component {
     const node = utils.getComponentNodeByFiberNode(
       target[fiberId],
       ctx.get("component"),
-      JSON.parse(ctx.get("dsl"))
+      ctx.get("dsl").dsl.page
     );
 
     this.currentHover = target;
@@ -123,7 +123,7 @@ class PanelCanvasAbsolute extends React.Component {
     const node = utils.getComponentNodeByFiberNode(
       target[fiberId],
       ctx.get("component"),
-      JSON.parse(ctx.get("dsl"))
+      ctx.get("dsl").dsl.page
     );
 
     this.currentSelect = target;
@@ -149,7 +149,7 @@ class PanelCanvasAbsolute extends React.Component {
 
   render() {
     const { ctx } = this.props;
-    const dsl = ctx.get("dsl");
+    const dslManager = ctx.get("dsl");
     const component = ctx.get("component");
 
     return (
@@ -174,7 +174,7 @@ class PanelCanvasAbsolute extends React.Component {
         */}
         <DesignRender
           className="panel-canvas-absolute-render"
-          dsl={dsl}
+          dsl={dslManager.dsl.page}
           component={component}
           style={{ height: "100%" }}
         />

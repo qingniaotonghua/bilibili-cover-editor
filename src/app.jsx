@@ -1,4 +1,5 @@
 import React from "react";
+import DSL from "./store";
 import Skeleton from "./components/Skeleton";
 import PanelSave from "./components/PanelSave";
 import PanelImport from "./components/PanelImport";
@@ -23,31 +24,31 @@ components.map((item) => {
 
 // ctx dsl
 // todo: absolute page 如何处理？ page 是一个页面的基本 root 元素，默认是应该存在的，是否由平台侧托管，而不依赖于物料侧？
-ctx.set(
-  "dsl",
-  `[
-      {
-        "id": "Button_b82839fd",
-        "componentName": "Button",
-        "props": {
-          "content": "按钮1",
-          "onClick": {
-            "type": "JSFx",
-            "value": "function() {window.alert(123)}"
-          }
-        }
-      },
-      {
-        "id": "Image_c8sfklae",
-        "componentName": "Image",
-        "props": {
-          "src": "https://img.alicdn.com/imgextra/i2/O1CN01OrHrMH1JfEY8c1aW2_!!6000000001055-2-tps-700-700.png",
-          "width": 120
+const dslInstance = new DSL({
+  page: [
+    {
+      id: "Button_b82839fd",
+      componentName: "Button",
+      props: {
+        content: "按钮1",
+        onClick: {
+          type: "JSFx",
+          value: "function() {window.alert(123)}",
         },
-        "css": "border: 1px solid #f00; top: 100px; left: 300px;"
-      }
-  ]`
-);
+      },
+    },
+    {
+      id: "Image_c8sfklae",
+      componentName: "Image",
+      props: {
+        src: "https://img.alicdn.com/imgextra/i2/O1CN01OrHrMH1JfEY8c1aW2_!!6000000001055-2-tps-700-700.png",
+        width: 120,
+      },
+      css: "border: 1px solid #f00; top: 100px; left: 300px;",
+    },
+  ],
+});
+ctx.set("dsl", dslInstance);
 
 const standDSL = `[
   {

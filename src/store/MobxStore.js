@@ -1,9 +1,25 @@
-import {makeAutoObservable} from 'mobx'
+import { makeObservable, observable, action, computed } from "mobx";
 
-export default new class {
+export default class {
+  dsl = {};
+  constructor(dsl = {}) {
+    makeObservable(this, {
+      dsl: observable,
+      setDSL: action,
+    });
 
-  constructor() {    
-    this.dsl = "";
-    makeAutoObservable(this);
-  }  
+    this.dsl = dsl;
+  }
+
+  setDSL(dsl) {
+    this.dsl = dsl;
+  }
+
+  getDSLById(id) {}
+
+  setDSLById(id, value) {}
+
+  setDSLPropValueById(id, prop, value) {}
+
+  getDSLPropValueById(id, prop) {}
 }
