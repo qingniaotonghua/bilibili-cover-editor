@@ -1,0 +1,28 @@
+.panel-canvas-absolute {
+  height: 100%;
+  overflow: auto;
+
+  &-render {
+    position: relative;
+    & > * {
+      position: absolute;
+    }
+  }
+}
+
+.panel-canvas-empty-block {
+  background-color: #eee;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+
+  &::after {
+    content: "拖拽组件到这里";
+    color: #999;
+    font-size: 14px;
+    flex-grow: 1;
+    text-align: center;
+  }
+}

@@ -1,0 +1,65 @@
+.panel-component {
+  &-item {
+    padding: 5px 15px;
+    // cursor: grab;
+
+    &:hover {
+      outline-offset: -1px;
+      outline: 1px dashed #aaa;
+    }
+
+    &-img {
+      width: 100%;
+    }
+
+    &-title {
+      text-align: center;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    svg {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  &-ghost-hidden {
+    position: fixed;
+    z-index: -999;
+    width: 0;
+    height: 0;
+    margin-left: -99999px;
+  }
+
+  &-ghost {
+    width: 80px;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+    background-color: #aaa;
+    font-size: 12px;
+    color: #fff;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .ant-collapse-borderless {
+    background-color: unset;
+  }
+
+  .ant-collapse-header {
+    background-color: #f5f5f5 !important;
+  }
+
+  .ant-collapse-item {
+    border-bottom: 0 !important;
+  }
+
+  .ant-collapse-content-box {
+    // padding: 0 !important;
+  }
+}

@@ -1,0 +1,92 @@
+.panel-canvas-base-select-ghost {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  outline: 2px solid #1890ff;
+  display: none;
+
+  &-op {
+    position: absolute;
+    background: #1890ff;
+    // height: 20px;
+    top: -30px;
+    right: 0;
+    border-radius: 3px;
+    padding: 2px 3px;
+    display: flex;
+    pointer-events: all;
+    & > div {
+      margin: 0 3px;
+      cursor: pointer;
+    }
+    img {
+      width: 16px;
+      pointer-events: none;
+    }
+  }
+
+  &-block {
+    box-sizing: border-box;
+    position: absolute;
+    border: 1px solid #000;
+    width: 8px;
+    height: 8px;
+    background-color: #fff;
+    pointer-events: all;
+  }
+
+  &-tl {
+    top: -4px;
+    left: -4px;
+    cursor: nwse-resize;
+  }
+  &-tm {
+    top: -4px;
+    left: 50%;
+    margin-left: -4px;
+    cursor: ns-resize;
+  }
+  &-tr {
+    top: -4px;
+    right: -4px;
+    cursor: nesw-resize;
+  }
+  &-ml {
+    left: -4px;
+    top: 50%;
+    margin-top: -4px;
+    cursor: ew-resize;
+  }
+  &-mr {
+    right: -4px;
+    top: 50%;
+    margin-top: -4px;
+    cursor: ew-resize;
+  }
+  &-bl {
+    bottom: -4px;
+    left: -4px;
+    cursor: nesw-resize;
+  }
+  &-bm {
+    bottom: -4px;
+    left: 50%;
+    margin-left: -4px;
+    cursor: ns-resize;
+  }
+  &-br {
+    bottom: -4px;
+    right: -4px;
+    cursor: nwse-resize;
+  }
+
+  &-mask {
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+  }
+}
