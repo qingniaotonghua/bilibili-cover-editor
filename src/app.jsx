@@ -87,6 +87,10 @@ class App extends React.Component {
     super(props);
   }
 
+  componentDidMount() {
+    ctx.get("skeleton").openDockByName("component");
+  }
+
   render() {
     return (
       <div className="app">

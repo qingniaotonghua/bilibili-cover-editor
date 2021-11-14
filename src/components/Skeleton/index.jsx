@@ -21,6 +21,8 @@ class Skeleton extends React.PureComponent {
     this.state = {
       dockSelectName: "",
     };
+
+    this.props.ctx.set("skeleton", this);
   }
 
   renderTopArea() {
@@ -201,6 +203,12 @@ class Skeleton extends React.PureComponent {
 
     this.setState({
       dockSelectName: item?.name === dockSelectName ? "" : item?.name,
+    });
+  }
+
+  openDockByName(name) {
+    this.setState({
+      dockSelectName: name,
     });
   }
 
