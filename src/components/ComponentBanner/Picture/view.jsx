@@ -8,7 +8,7 @@ export default class Page extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
-    return <div className="le-page">{children}</div>;
+    const {} = this.props;
+    return <div className="banner-title">title</div>;
   }
 }

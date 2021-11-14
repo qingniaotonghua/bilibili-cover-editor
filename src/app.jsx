@@ -7,7 +7,7 @@ import PanelLogo from "./components/PanelLogo";
 import PanelComponent from "./components/PanelComponent";
 import PanelAttribute from "./components/PanelAttribute";
 import PanelCanvasAbsolute from "./components/PanelCanvasAbsolute";
-import components from "./components/ComponentMaterialAntd";
+import components from "./components/ComponentBanner";
 import event from "./utils/SingleEventBus";
 
 const ctx = new Map();
@@ -25,28 +25,29 @@ components.map((item) => {
 // ctx dsl
 // todo: absolute page 如何处理？ page 是一个页面的基本 root 元素，默认是应该存在的，是否由平台侧托管，而不依赖于物料侧？
 const dslInstance = new DSL({
-  page: [
-    {
-      id: "Button_b82839fd",
-      componentName: "Button",
-      props: {
-        content: "按钮1",
-        onClick: {
-          type: "JSFx",
-          value: "function() {window.alert(123)}",
-        },
-      },
-    },
-    {
-      id: "Image_c8sfklae",
-      componentName: "Image",
-      props: {
-        src: "https://img.alicdn.com/imgextra/i2/O1CN01OrHrMH1JfEY8c1aW2_!!6000000001055-2-tps-700-700.png",
-        width: 120,
-      },
-      css: "border: 1px solid #f00; top: 100px; left: 300px;",
-    },
-  ],
+  page: [],
+  // page: [
+  //   {
+  //     id: "Button_b82839fd",
+  //     componentName: "Button",
+  //     props: {
+  //       content: "按钮1",
+  //       onClick: {
+  //         type: "JSFx",
+  //         value: "function() {window.alert(123)}",
+  //       },
+  //     },
+  //   },
+  //   {
+  //     id: "Image_c8sfklae",
+  //     componentName: "Image",
+  //     props: {
+  //       src: "https://img.alicdn.com/imgextra/i2/O1CN01OrHrMH1JfEY8c1aW2_!!6000000001055-2-tps-700-700.png",
+  //       width: 120,
+  //     },
+  //     css: "border: 1px solid #f00; top: 100px; left: 300px;",
+  //   },
+  // ],
 });
 ctx.set("dsl", dslInstance);
 
@@ -117,13 +118,6 @@ class App extends React.Component {
               hidden: false,
               icon: "https://img.alicdn.com/imgextra/i1/O1CN01ED4RnW1OVgMdOEZkH_!!6000000001711-2-tps-128-128.png",
               content: <div>大纲面板</div>,
-            },
-            {
-              name: "other",
-              title: "其他面板",
-              disabled: true,
-              icon: "https://img.alicdn.com/imgextra/i4/O1CN01TJRSxi1UNKq2Rna0w_!!6000000002505-2-tps-128-128.png",
-              content: <div>1其他面板11</div>,
             },
             {
               name: "dsl",
