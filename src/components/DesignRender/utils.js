@@ -113,9 +113,8 @@ function renderSchema(schema, components, context) {
 // 添加样式
 function appendStyle({ id, css }) {
   const _oldEl = document.getElementById("style-" + id);
-  debugger;
   if (_oldEl) {
-    el.innerHTML = css;
+    _oldEl.innerHTML = css;
     return;
   }
 
