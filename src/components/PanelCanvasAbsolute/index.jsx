@@ -3,6 +3,7 @@ import { findDOMNode } from "react-dom";
 import { observer } from "mobx-react";
 import DesignRender from "./../DesignRender";
 import Logger from "lp-logger";
+import css from "css";
 import { debounce, throttle } from "lodash";
 import { utils, HoverGhost, SelectGhost } from "./../PanelCanvasBase";
 
@@ -166,8 +167,33 @@ class PanelCanvasAbsolute extends React.Component {
     this.draging = true;
   }
   handleSelectGhostOnDrag() {}
-  handleSelectGhostOnDragEnd() {
+  handleSelectGhostOnDragEnd(style, { dslInfo }) {
+    const { ctx } = this.props;
+    const dslManager = ctx.get("dsl");
+    const cssParse = css.parse(dslInfo.props.css, { silent: true });
+
     this.draging = false;
+
+    if (cssParse.stylesheet.parsingErrors.length) {
+      logger.error("源码错误: " + cssParse.stylesheet.parsingErrors);
+      return false;
+    } else {
+      const cssObj = {};
+
+      cssParse.stylesheet.rules[0].declarations.map((item) => {
+        cssObj[item.property] = item.value;
+      });
+      cssObj.left = style.left;
+      cssObj.top = style.top;
+
+      dslManager.setPageDslProp(
+        "css",
+        `:root {${Object.keys(cssObj)
+          .map((name) => `${name}:${cssObj[name]}`)
+          .join(";")}}`,
+        dslInfo.id
+      );
+    }
   }
   handleSelectGhostOnDel({ dslInfo }) {
     const { ctx } = this.props;

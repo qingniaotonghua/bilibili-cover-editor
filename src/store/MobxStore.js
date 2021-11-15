@@ -27,7 +27,7 @@ export default class {
   delPageDsl(id) {
     const page = this.dsl?.page || [];
 
-    console.log(this._delPageDsl(page, id));
+    this._delPageDsl(page, id);
   }
 
   _delPageDsl(dsl, id) {
@@ -62,23 +62,57 @@ export default class {
     });
   }
 
-  _getDSLById(id, dsl) {
-    for (let i = 0; i < dsl.length; i++) {
+  getPageDSL(id) {
+    const page = this.dsl?.page || [];
+
+    return this._getPageDSL(page, id);
+  }
+
+  _getPageDSL(dsl, id) {
+    for (let i = 0; i < dsl?.length; i++) {
       const item = dsl[i];
 
-      if (item.id == id) {
+      if (item?.id == id) {
         return item;
       }
 
       if (Array.isArray(item.children)) {
-        const findSubItem = getDSLById(id, item.children);
+        const findSubItem = this._getPageDSL(item.children, id);
 
         if (findSubItem) {
           return findSubItem;
         }
       }
     }
+  }
 
-    return null;
+  setPageDslProp(name, value, id) {
+    const page = this.dsl?.page || [];
+
+    this._setPageDslProp(page, name, value, id);
+  }
+
+  _setPageDslProp(dsl, name, value, id) {
+    for (let i = 0; i < dsl?.length; i++) {
+      const item = dsl[i];
+
+      if (item?.id == id) {
+        item.props[name] = value;
+        return;
+      }
+
+      if (Array.isArray(item.children)) {
+        const findSubItem = this._setPageDslProp(
+          item.children,
+          name,
+          value,
+          id
+        );
+
+        if (findSubItem) {
+          return findSubItem;
+        }
+      }
+    }
   }
 }

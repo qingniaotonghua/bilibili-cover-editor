@@ -154,23 +154,28 @@ export default class SelectGhost extends React.PureComponent {
         top: e.pageY - this.startPos.mouseY,
       };
 
+      const elStyle = {};
+
       // todo 原始el无效果
       if (
         this.startPos.top + diffPos.top >
         0 // top > 0
       ) {
         this.ref.style.top = this.startPos.top + diffPos.top + "px";
-        el.style.top = this.startPos.selectTop + diffPos.top + "px";
+        elStyle.top = this.startPos.selectTop + diffPos.top + "px";
       }
       if (
         this.startPos.left + diffPos.left >
         0 // left > 0
       ) {
         this.ref.style.left = this.startPos.left + diffPos.left + "px";
-        el.style.left = this.startPos.selectLeft + diffPos.left + "px";
+        elStyle.left = this.startPos.selectLeft + diffPos.left + "px";
       }
 
-      onDrag?.();
+      el.style.left = elStyle.left;
+      el.style.top = elStyle.top;
+
+      onDrag?.(elStyle);
       return;
     }
   }
@@ -181,15 +186,22 @@ export default class SelectGhost extends React.PureComponent {
 
     const { onDragEnd } = this.props;
 
+    // click的执行顺序问题
+    this.startDrag &&
+      setTimeout(() => {
+        onDragEnd?.(
+          {
+            left: this._node?.el?.style.left,
+            top: this._node?.el?.style.top,
+          },
+          this._node
+        );
+      });
+
     // 重置标志位
     this.startDrag = false;
     this.refMask.style.display = "none";
     this.ref.style.zIndex = 2;
-
-    // click的执行顺序问题
-    setTimeout(() => {
-      onDragEnd?.();
-    });
   }
 
   render() {

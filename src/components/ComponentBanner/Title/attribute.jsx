@@ -35,7 +35,7 @@ export default {
     },
     {
       name: "css",
-      initialValue: "font-size: 40px;",
+      initialValue: ":root{font-size: 40px;}",
       display: "none",
     },
   ],

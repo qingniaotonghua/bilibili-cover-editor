@@ -13,7 +13,7 @@ function renderStyle(schema) {
     if (item?.props?.css && item.id) {
       result.push({
         id: item.id,
-        css: `.${item.id}{${item.props.css}}`,
+        css: item.props.css.replace(":root", `.${item.id}`),
       });
       result.concat(renderStyle(item.children));
     }
