@@ -26,13 +26,21 @@ export default {
   hidden: false,
   props: [
     {
-      name: "didMount",
-      title: "内容",
+      name: "url",
+      title: "地址",
       description: "",
       supportVariable: true,
-      initialValue: "页面加载完成时",
+      initialValue: "https://img.alicdn.com/imgextra/i1/O1CN01CcVlF91ZlDb0Mp6Gr_!!6000000003234-0-tps-1100-641.jpg",
       setter: <Setters.TextSetter />,
-      display: "none",
+      // display: "none",
+    },
+    {
+      name: "width",
+      title: "宽",
+      description: "",
+      supportVariable: true,
+      initialValue: "100%",
+      setter: <Setters.TextSetter />,
     },
   ],
 };

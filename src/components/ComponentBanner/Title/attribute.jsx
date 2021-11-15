@@ -26,12 +26,16 @@ export default {
   hidden: false,
   props: [
     {
-      name: "didMount",
-      title: "内容",
+      name: "title",
+      title: "标题",
       description: "",
       supportVariable: true,
-      initialValue: "页面加载完成时",
+      initialValue: "标题",
       setter: <Setters.TextSetter />,
+    },
+    {
+      name: "css",
+      initialValue: "font-size: 40px;",
       display: "none",
     },
   ],

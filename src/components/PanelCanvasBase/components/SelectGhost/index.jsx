@@ -59,7 +59,9 @@ export default class SelectGhost extends React.PureComponent {
   }
 
   _setNodeStyle() {
-    if (!this._node) {
+    const el = this._node?.el;
+
+    if (!el) {
       this.setStyle({
         display: "none",
       });
@@ -72,9 +74,9 @@ export default class SelectGhost extends React.PureComponent {
       top: boundTop,
       width: boundWidth,
       height: boundHeight,
-    } = this._node.getBoundingClientRect();
-    const width = this._node.offsetWidth;
-    const height = this._node.offsetHeight;
+    } = el.getBoundingClientRect();
+    const width = el.offsetWidth;
+    const height = el.offsetHeight;
     // const centerPointer = {
     //   x: boundLeft + boundWidth / 2,
     //   y: boundTop + boundHeight / 2,
@@ -101,11 +103,11 @@ export default class SelectGhost extends React.PureComponent {
     this._setNodeStyle();
   }
 
-  setNode(el, nodeInfo) {
+  setNode(nodeInfo) {
     const { ctx } = this.props;
 
-    el && ctx?.get("event")?.emit("le.node.select", nodeInfo);
-    this._node = el;
+    nodeInfo && ctx?.get("event")?.emit("le.node.select", nodeInfo);
+    this._node = nodeInfo;
     this._setNodeStyle();
   }
 
@@ -114,6 +116,7 @@ export default class SelectGhost extends React.PureComponent {
     e.preventDefault();
 
     const { onDragStart } = this.props;
+    const el = this._node?.el;
 
     this.startPos = {
       mouseX: e.pageX,
@@ -122,8 +125,8 @@ export default class SelectGhost extends React.PureComponent {
       height: e.target.parentElement.parentElement.clientHeight,
       top: parseInt(e.target.parentElement.parentElement.offsetTop) || 0,
       left: parseInt(e.target.parentElement.parentElement.offsetLeft) || 0,
-      selectTop: parseInt(this._node.offsetTop) || 0,
-      selectLeft: parseInt(this._node.offsetLeft) || 0,
+      selectTop: parseInt(el.offsetTop) || 0,
+      selectLeft: parseInt(el.offsetLeft) || 0,
       dir: e.target.dataset.dir,
     };
 
@@ -132,13 +135,14 @@ export default class SelectGhost extends React.PureComponent {
       onDragStart?.();
       this.startDrag = true;
       // 防止动画干扰拖动
-      this._node.style.transition = "none";
+      el.style.transition = "none";
       return;
     }
   }
 
   handleMouseMove(e) {
     const { onDrag } = this.props;
+    const el = this._node?.el;
 
     // 拖动
     if (this.startDrag) {
@@ -156,14 +160,14 @@ export default class SelectGhost extends React.PureComponent {
         0 // top > 0
       ) {
         this.ref.style.top = this.startPos.top + diffPos.top + "px";
-        this._node.style.top = this.startPos.selectTop + diffPos.top + "px";
+        el.style.top = this.startPos.selectTop + diffPos.top + "px";
       }
       if (
         this.startPos.left + diffPos.left >
         0 // left > 0
       ) {
         this.ref.style.left = this.startPos.left + diffPos.left + "px";
-        this._node.style.left = this.startPos.selectLeft + diffPos.left + "px";
+        el.style.left = this.startPos.selectLeft + diffPos.left + "px";
       }
 
       onDrag?.();
@@ -189,7 +193,7 @@ export default class SelectGhost extends React.PureComponent {
   }
 
   render() {
-    const { canResize, onDrag, onDragStart, onDragEnd } = this.props;
+    const { canResize, onDrag, onDragStart, onDragEnd, onDel } = this.props;
 
     return (
       <>
@@ -244,7 +248,13 @@ export default class SelectGhost extends React.PureComponent {
             <div className="panel-canvas-base-select-ghost-copy" title="复制">
               <img src={SvgCopy} />
             </div>
-            <div className="panel-canvas-base-select-ghost-del" title="删除">
+            <div
+              className="panel-canvas-base-select-ghost-del"
+              title="删除"
+              onClick={() => {
+                onDel?.(this._node);
+              }}
+            >
               <img src={SvgDel} />
             </div>
           </div>

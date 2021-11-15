@@ -10,10 +10,10 @@ function renderStyle(schema) {
   const result = [];
 
   (Array.isArray(schema) ? schema : [schema]).map((item) => {
-    if (item.css && item.id) {
+    if (item?.props?.css && item.id) {
       result.push({
         id: item.id,
-        css: `.${item.id}{${item.css}}`,
+        css: `.${item.id}{${item.props.css}}`,
       });
       result.concat(renderStyle(item.children));
     }
@@ -113,7 +113,7 @@ function renderSchema(schema, components, context) {
 // 添加样式
 function appendStyle({ id, css }) {
   const _oldEl = document.getElementById("style-" + id);
-
+  debugger;
   if (_oldEl) {
     el.innerHTML = css;
     return;

@@ -1,5 +1,5 @@
 import React from "react";
-import { observable, action, makeObservable } from "mobx";
+import { findDOMNode } from "react-dom";
 import { observer } from "mobx-react";
 import DesignRender from "./../DesignRender";
 import Logger from "lp-logger";
@@ -23,17 +23,20 @@ class PanelCanvasAbsolute extends React.Component {
       this.refCanvas =
       this.refHoverGhost =
       this.refSelectGhost =
+      this.refDesignRender =
       this.draging =
         null;
     this.handleOnMouseOver = debounce(this.handleOnMouseOver.bind(this), 50);
     this.handleOnClickCapture = this.handleOnClickCapture.bind(this);
     this.handleOnDragOver = throttle(this.handleOnDragOver.bind(this), 300);
+    this.handleOnDrop = this.handleOnDrop.bind(this);
     this.handleOnClick = this.handleOnClick.bind(this);
     this.handleSelectGhostOnDragStart =
       this.handleSelectGhostOnDragStart.bind(this);
     this.handleSelectGhostOnDrag = this.handleSelectGhostOnDrag.bind(this);
     this.handleSelectGhostOnDragEnd =
       this.handleSelectGhostOnDragEnd.bind(this);
+    this.handleSelectGhostOnDel = this.handleSelectGhostOnDel.bind(this);
   }
 
   componentDidMount() {
@@ -56,7 +59,22 @@ class PanelCanvasAbsolute extends React.Component {
     }
 
     this.currentDragHover = target;
-    console.log(target);
+    console.log("handleOnDragOver", target);
+  }
+
+  handleOnDrop({ dataTransfer }) {
+    const { ctx } = this.props;
+    const dslManager = ctx.get("dsl");
+    const componentItem = ctx
+      .get("component")
+      .get(dataTransfer.getData("componentName"));
+
+    if (!componentItem) {
+      return;
+    }
+
+    dslManager.addPageDSL(componentItem);
+    console.log("handleOnDrop", dataTransfer.getData("componentName"));
   }
 
   handleOnMouseOver(e) {
@@ -99,6 +117,11 @@ class PanelCanvasAbsolute extends React.Component {
   }
 
   handleOnClickCapture(e) {
+    // 只处理画布渲染内的
+    if (!findDOMNode(this.refDesignRender).contains(e.target)) {
+      return;
+    }
+
     e.stopPropagation();
 
     if (this.draging) {
@@ -133,7 +156,7 @@ class PanelCanvasAbsolute extends React.Component {
       return;
     }
 
-    this.refSelectGhost.setNode(node.el, node);
+    this.refSelectGhost.setNode(node);
     this.refHoverGhost.setNode(null);
   }
 
@@ -146,11 +169,19 @@ class PanelCanvasAbsolute extends React.Component {
   handleSelectGhostOnDragEnd() {
     this.draging = false;
   }
+  handleSelectGhostOnDel({ dslInfo }) {
+    const { ctx } = this.props;
+    const dslManager = ctx.get("dsl");
+
+    dslManager.delPageDsl(dslInfo.id);
+  }
 
   render() {
     const { ctx } = this.props;
     const dslManager = ctx.get("dsl");
     const component = ctx.get("component");
+
+    logger.log("render");
 
     return (
       <div
@@ -158,6 +189,7 @@ class PanelCanvasAbsolute extends React.Component {
         onClickCapture={this.handleOnClickCapture}
         onClick={this.handleOnClick}
         onDragOver={this.handleOnDragOver}
+        onDrop={this.handleOnDrop}
         ref={(_) => (this.refCanvas = _)}
       >
         {/* {!children ? <div className="panel-canvas-empty-block"></div> : null} */}
@@ -166,6 +198,7 @@ class PanelCanvasAbsolute extends React.Component {
           ctx={ctx}
           onDragStart={this.handleSelectGhostOnDragStart}
           onDragEnd={this.handleSelectGhostOnDragEnd}
+          onDel={this.handleSelectGhostOnDel}
         />
         <HoverGhost ref={(_) => (this.refHoverGhost = _)} />
 
@@ -173,6 +206,7 @@ class PanelCanvasAbsolute extends React.Component {
         如果有 transition 的el，是否要给它覆盖 还是怎样？
         */}
         <DesignRender
+          ref={(_) => (this.refDesignRender = _)}
           className="panel-canvas-absolute-render"
           dsl={dslManager.dsl.page}
           component={component}
