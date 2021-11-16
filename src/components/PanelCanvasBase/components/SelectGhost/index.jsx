@@ -24,6 +24,7 @@ export default class SelectGhost extends React.PureComponent {
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleDel = this.handleDel.bind(this);
   }
 
   componentDidMount() {
@@ -206,6 +207,14 @@ export default class SelectGhost extends React.PureComponent {
     this.ref.style.zIndex = 2;
   }
 
+  handleDel() {
+    const { ctx, onDel } = this.props;
+
+    ctx?.get("event")?.emit("le.node.select");
+    onDel?.(this._node);
+    this.setNode(null);
+  }
+
   render() {
     const { ctx, canResize, onDrag, onDragStart, onDragEnd, onDel } =
       this.props;
@@ -266,10 +275,7 @@ export default class SelectGhost extends React.PureComponent {
             <div
               className="panel-canvas-base-select-ghost-del"
               title="删除"
-              onClick={() => {
-                ctx?.get("event")?.emit("le.node.select");
-                onDel?.(this._node);
-              }}
+              onClick={this.handleDel}
             >
               <img src={SvgDel} />
             </div>

@@ -200,6 +200,7 @@ class PanelCanvasAbsolute extends React.Component {
     const dslManager = ctx.get("dsl");
 
     dslManager.delPageDsl(dslInfo.id);
+    this.currentSelect = this.currentHover = null;
   }
 
   render() {
