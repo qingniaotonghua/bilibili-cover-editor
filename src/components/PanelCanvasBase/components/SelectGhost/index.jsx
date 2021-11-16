@@ -29,6 +29,7 @@ export default class SelectGhost extends React.PureComponent {
   componentDidMount() {
     document.addEventListener("click", this.handleClickResize);
     window.addEventListener("resize", this.handleWindowResize);
+    window.addEventListener("keyup", this.handleWindowResize);
     window.addEventListener("mousemove", this.handleMouseMove);
     window.addEventListener("mouseup", this.handleMouseUp);
   }
@@ -36,6 +37,7 @@ export default class SelectGhost extends React.PureComponent {
   componentWillUnmount() {
     document.removeEventListener("click", this.handleClickResize);
     window.removeEventListener("resize", this.handleWindowResize);
+    window.addEventListener("keyup", this.handleWindowResize);
     window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
   }
@@ -106,7 +108,7 @@ export default class SelectGhost extends React.PureComponent {
   setNode(nodeInfo) {
     const { ctx } = this.props;
 
-    nodeInfo && ctx?.get("event")?.emit("le.node.select", nodeInfo);
+    ctx?.get("event")?.emit("le.node.select", nodeInfo);
     this._node = nodeInfo;
     this._setNodeStyle();
   }
@@ -205,7 +207,8 @@ export default class SelectGhost extends React.PureComponent {
   }
 
   render() {
-    const { canResize, onDrag, onDragStart, onDragEnd, onDel } = this.props;
+    const { ctx, canResize, onDrag, onDragStart, onDragEnd, onDel } =
+      this.props;
 
     return (
       <>
@@ -264,6 +267,7 @@ export default class SelectGhost extends React.PureComponent {
               className="panel-canvas-base-select-ghost-del"
               title="删除"
               onClick={() => {
+                ctx?.get("event")?.emit("le.node.select");
                 onDel?.(this._node);
               }}
             >

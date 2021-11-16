@@ -52,7 +52,7 @@ export default class {
     const props = {};
 
     componentItem.props?.map((prop) => {
-      props[prop.name] = prop.initialValue;
+      props[prop.name] = prop.value;
     });
 
     this.dsl.page.push({

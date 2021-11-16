@@ -14,8 +14,8 @@ class PanelAttribute extends React.Component {
     super(props);
 
     this.state = {
-      componentInfo: {},
-      dslInfo: {},
+      componentInfo: null,
+      dslInfo: null,
     };
 
     this.offEventNodeSelect = null;
@@ -35,9 +35,10 @@ class PanelAttribute extends React.Component {
   }
 
   handleEventNodeSelect(e) {
+    logger.log("handleEventNodeSelect", e);
     this.setState({
-      componentInfo: e.componentInfo,
-      dslInfo: e.dslInfo,
+      componentInfo: e?.componentInfo,
+      dslInfo: e?.dslInfo,
     });
   }
 
@@ -48,12 +49,34 @@ class PanelAttribute extends React.Component {
 
     logger.log("render");
 
+    if (!componentInfo) {
+      return (
+        <div className="panel-attribute">
+          <div className="panel-attribute-noselect">请在左侧画布选择</div>
+        </div>
+      );
+    }
+
     return (
       <div className="panel-attribute">
-        <div className="panel-attribute-name">{componentInfo.title}</div>
-        <div>
-          {dslInfo?.id &&
-            JSON.stringify(dslManager.getPageDSL(dslInfo.id), null, 2)}
+        <div className="panel-attribute-name">{componentInfo?.title}</div>
+        <div className="panel-attribute-content">
+          {componentInfo?.props
+            ?.filter((item) => item.display != "none")
+            ?.map((item, index) => (
+              <div key={index} className="panel-attribute-item">
+                <div className="panel-attribute-item-title">{item.title}</div>
+                {React.cloneElement(item.setter, {
+                  value: dslInfo.props[item.name],
+                  setValue: (value) =>
+                    dslManager.setPageDslProp(item.name, value, dslInfo.id),
+                })}
+              </div>
+            ))}
+          <div style={{ fontSize: 12, color: "#ccc" }}>
+            {dslInfo?.id &&
+              JSON.stringify(dslManager.getPageDSL(dslInfo.id), null, 2)}
+          </div>
         </div>
       </div>
     );

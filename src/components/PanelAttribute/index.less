@@ -1,9 +1,29 @@
 .panel-attribute {
   overflow-x: hidden;
 
+  &-noselect {
+    padding-top: 30px;
+    color: rgba(0, 0, 0, 0.6);
+    text-align: center;
+  }
+
   &-name {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 3px 10px;
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  &-content {
+    padding: 10px 10px 0;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    &-title {
+      width: 50px;
+      color: rgba(0, 0, 0, 0.6);
+    }
   }
 }

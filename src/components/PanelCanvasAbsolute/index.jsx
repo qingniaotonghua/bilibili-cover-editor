@@ -60,7 +60,7 @@ class PanelCanvasAbsolute extends React.Component {
     }
 
     this.currentDragHover = target;
-    console.log("handleOnDragOver", target);
+    // console.log("handleOnDragOver", target);
   }
 
   handleOnDrop({ dataTransfer }) {
@@ -75,7 +75,7 @@ class PanelCanvasAbsolute extends React.Component {
     }
 
     dslManager.addPageDSL(componentItem);
-    console.log("handleOnDrop", dataTransfer.getData("componentName"));
+    // console.log("handleOnDrop", dataTransfer.getData("componentName"));
   }
 
   handleOnMouseOver(e) {
