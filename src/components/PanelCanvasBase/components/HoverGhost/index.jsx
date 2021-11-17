@@ -1,9 +1,15 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM, { createPortal } from "react-dom";
 
 import "./index.less";
 
 export default class HoverGhost extends React.PureComponent {
+  constructor(props) {
+    super(props);
+
+    this.portalDom = document.createElement("div");
+    document.body.appendChild(this.portalDom);
+  }
   getEl() {
     return ReactDOM.findDOMNode(this.ref);
   }
@@ -59,8 +65,12 @@ export default class HoverGhost extends React.PureComponent {
     this.setName(nodeInfo.componentInfo.title);
   }
 
+  componentWillUnmount() {
+    document.body.removeChild(this.portalDom);
+  }
+
   render() {
-    return (
+    return createPortal(
       <div
         ref={(_) => (this.ref = _)}
         className="panel-canvas-base-hover-ghost"
@@ -69,7 +79,8 @@ export default class HoverGhost extends React.PureComponent {
           ref={(_) => (this.refName = _)}
           className="panel-canvas-base-hover-ghost-name"
         ></div>
-      </div>
+      </div>,
+      this.portalDom
     );
   }
 }

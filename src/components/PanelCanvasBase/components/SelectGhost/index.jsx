@@ -1,10 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM, { createPortal } from "react-dom";
 import { throttle } from "lodash";
+import Line from "./line";
 
 import SvgDel from "./images/del.svg";
 import SvgCopy from "./images/copy.svg";
 import SvgDrag from "./images/drag.svg";
+import SvgTop from "./images/top.svg";
+import SvgBottom from "./images/bottom.svg";
 
 import "./index.less";
 
@@ -16,8 +19,15 @@ export default class SelectGhost extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this._node = this.startDrag = null;
+    this._node = this.startDrag = this.startMoveDir = null;
+    this.refMask =
+      this.ref =
+      this.refTopHorLine =
+      this.refLeftVerLine =
+      this.refRightVerLine =
+        null;
     this.startPos = {};
+    this.attractDelta = 10;
 
     this.handleClickResize = this.handleClickResize.bind(this);
     this.handleWindowResize = throttle(this.handleClickResize.bind(this), 300);
@@ -25,13 +35,16 @@ export default class SelectGhost extends React.PureComponent {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleDel = this.handleDel.bind(this);
+
+    this.portalDom = document.createElement("div");
+    document.body.appendChild(this.portalDom);
   }
 
   componentDidMount() {
     document.addEventListener("click", this.handleClickResize);
     window.addEventListener("resize", this.handleWindowResize);
     window.addEventListener("keyup", this.handleWindowResize);
-    window.addEventListener("mousemove", this.handleMouseMove);
+
     window.addEventListener("mouseup", this.handleMouseUp);
   }
 
@@ -39,8 +52,9 @@ export default class SelectGhost extends React.PureComponent {
     document.removeEventListener("click", this.handleClickResize);
     window.removeEventListener("resize", this.handleWindowResize);
     window.addEventListener("keyup", this.handleWindowResize);
-    window.removeEventListener("mousemove", this.handleMouseMove);
     window.removeEventListener("mouseup", this.handleMouseUp);
+
+    document.body.removeChild(this.portalDom);
   }
 
   getEl() {
@@ -63,6 +77,7 @@ export default class SelectGhost extends React.PureComponent {
 
   _setNodeStyle() {
     const el = this._node?.el;
+    const { canvasDomId } = this.props;
 
     if (!el) {
       this.setStyle({
@@ -72,6 +87,8 @@ export default class SelectGhost extends React.PureComponent {
       return;
     }
 
+    const canvasDom = document.getElementById(canvasDomId);
+    const canvasPosition = canvasDom.getBoundingClientRect();
     const {
       left: boundLeft,
       top: boundTop,
@@ -89,6 +106,7 @@ export default class SelectGhost extends React.PureComponent {
     // const left = centerPointer.x - width / 2;
     // const top = centerPointer.y - height / 2;
 
+    // todo： 滚动的处理
     this.setStyle({
       left: boundLeft + "px",
       top: boundTop + "px",
@@ -124,14 +142,18 @@ export default class SelectGhost extends React.PureComponent {
     this.startPos = {
       mouseX: e.pageX,
       mouseY: e.pageY,
-      width: e.target.parentElement.parentElement.clientWidth,
-      height: e.target.parentElement.parentElement.clientHeight,
-      top: parseInt(e.target.parentElement.parentElement.offsetTop) || 0,
-      left: parseInt(e.target.parentElement.parentElement.offsetLeft) || 0,
+      // ? margin
+      width: this.ref.clientWidth,
+      height: this.ref.clientHeight,
+      top: parseInt(this.ref.offsetTop) || 0,
+      left: parseInt(this.ref.offsetLeft) || 0,
       selectTop: parseInt(el.offsetTop) || 0,
       selectLeft: parseInt(el.offsetLeft) || 0,
       dir: e.target.dataset.dir,
+      selectStyle: el.style,
     };
+
+    window.addEventListener("mousemove", this.handleMouseMove);
 
     // 按下拖拽
     if (e.target.classList.contains("panel-canvas-base-select-ghost-drag")) {
@@ -141,38 +163,104 @@ export default class SelectGhost extends React.PureComponent {
       el.style.transition = "none";
       return;
     }
+
+    // 大小调整
+    if (e.target.classList.contains("panel-canvas-base-select-ghost-block")) {
+      this.startMoveDir = true;
+      // 防止动画干扰拖动
+      el.style.transition = "none";
+      return;
+    }
   }
 
   handleMouseMove(e) {
-    const { onDrag } = this.props;
+    const { onDrag, canvasDomId } = this.props;
     const el = this._node?.el;
+    const canvasDom = document.getElementById(canvasDomId);
+    const canvasPosition = canvasDom.getBoundingClientRect();
+    const elStyle = {};
+    let diffPos = {
+      left: e.pageX - this.startPos.mouseX,
+      top: e.pageY - this.startPos.mouseY,
+    };
 
     // 拖动
     if (this.startDrag) {
       this.refMask.style.display = "block";
       this.ref.style.zIndex = 99999;
 
-      let diffPos = {
-        left: e.pageX - this.startPos.mouseX,
-        top: e.pageY - this.startPos.mouseY,
-      };
+      let dealTop = this.startPos.top + diffPos.top;
+      let dealLeft = this.startPos.left + diffPos.left;
 
-      const elStyle = {};
-
-      // todo 原始el无效果
+      // 吸附判断 顶部
       if (
-        this.startPos.top + diffPos.top >
-        0 // top > 0
+        dealTop >= -1 * this.attractDelta + canvasPosition.top &&
+        dealTop <= this.attractDelta + canvasPosition.top
       ) {
+        this.ref.style.top = canvasPosition.top + "px";
+        elStyle.top = 0;
+        this.refTopHorLine.setPos({
+          size: canvasPosition.width + "px",
+          x: canvasPosition.left + "px",
+          y: canvasPosition.top + "px",
+        });
+      }
+      // 吸附判断 底部
+      else if (
+        dealTop + this.startPos.height >=
+          -1 * this.attractDelta + canvasPosition.bottom &&
+        dealTop + this.startPos.height <=
+          this.attractDelta + canvasPosition.bottom
+      ) {
+        this.ref.style.top =
+          canvasPosition.bottom - this.startPos.height + "px";
+        elStyle.top = canvasPosition.height - this.startPos.height + "px";
+        this.refBottomHorLine.setPos({
+          size: canvasPosition.width + "px",
+          x: canvasPosition.left + "px",
+          y: canvasPosition.bottom + "px",
+        });
+      } else {
         this.ref.style.top = this.startPos.top + diffPos.top + "px";
         elStyle.top = this.startPos.selectTop + diffPos.top + "px";
+
+        this.refTopHorLine.setPos({ size: 0 });
+        this.refBottomHorLine.setPos({ size: 0 });
       }
+
+      // 吸附判断 左侧
       if (
-        this.startPos.left + diffPos.left >
-        0 // left > 0
+        dealLeft >= -1 * this.attractDelta + canvasPosition.left &&
+        dealLeft <= this.attractDelta + canvasPosition.left
       ) {
+        this.ref.style.left = canvasPosition.left + "px";
+        elStyle.left = 0;
+        this.refLeftVerLine.setPos({
+          size: canvasPosition.height + "px",
+          x: canvasPosition.left + "px",
+          y: canvasPosition.top + "px",
+        });
+      }
+      // 吸附判断 右侧
+      else if (
+        dealLeft + this.startPos.width >=
+          -1 * this.attractDelta + canvasPosition.right &&
+        dealLeft + this.startPos.width <=
+          this.attractDelta + canvasPosition.right
+      ) {
+        this.ref.style.left = canvasPosition.right - this.startPos.width + "px";
+        elStyle.left = canvasPosition.width - this.startPos.width + "px";
+        this.refRightVerLine.setPos({
+          size: canvasPosition.height + "px",
+          x: canvasPosition.right + "px",
+          y: canvasPosition.top + "px",
+        });
+      } else {
         this.ref.style.left = this.startPos.left + diffPos.left + "px";
         elStyle.left = this.startPos.selectLeft + diffPos.left + "px";
+
+        this.refLeftVerLine.setPos({ size: 0 });
+        this.refRightVerLine.setPos({ size: 0 });
       }
 
       el.style.left = elStyle.left;
@@ -181,30 +269,79 @@ export default class SelectGhost extends React.PureComponent {
       onDrag?.(elStyle);
       return;
     }
+
+    // 大小调整
+    if (this.startMoveDir) {
+      // 方向判断
+      if (this.startPos.dir[0] == "t") {
+        // 往上
+        {
+          this.ref.style.top = this.startPos.top + diffPos.top + "px";
+          this.ref.style.height = this.startPos.height - diffPos.top + "px";
+          elStyle.top = this.startPos.selectTop + diffPos.top + "px";
+          elStyle.height = this.startPos.height - diffPos.top + "px";
+        }
+      } else if (this.startPos.dir[0] == "b") {
+        // 往下
+        {
+          this.ref.style.height = this.startPos.height + diffPos.top + "px";
+          elStyle.height = this.startPos.height + diffPos.top + "px";
+        }
+      }
+      if (this.startPos.dir[1] == "l") {
+        // 往左
+        {
+          this.ref.style.left = this.startPos.left + diffPos.left + "px";
+          this.ref.style.width = this.startPos.width - diffPos.left + "px";
+          elStyle.left = this.startPos.selectLeft + diffPos.left + "px";
+          elStyle.width = this.startPos.width - diffPos.left + "px";
+        }
+      } else if (this.startPos.dir[1] == "r") {
+        // 往右
+        {
+          this.ref.style.width = this.startPos.width + diffPos.left + "px";
+          elStyle.width = this.startPos.width + diffPos.left + "px";
+        }
+      }
+
+      Object.entries(elStyle).filter(([key, value]) => (el.style[key] = value));
+    }
   }
 
   handleMouseUp(e) {
     e.stopPropagation();
     e.preventDefault();
 
+    window.removeEventListener("mousemove", this.handleMouseMove);
+
     const { onDragEnd } = this.props;
 
     // click的执行顺序问题
-    this.startDrag &&
+    (this.startDrag || this.startMoveDir) &&
       setTimeout(() => {
-        onDragEnd?.(
-          {
-            left: this._node?.el?.style.left,
-            top: this._node?.el?.style.top,
-          },
-          this._node
-        );
+        const cssObj = {
+          left: this._node?.el?.style.left || 0,
+          top: this._node?.el?.style.top || 0,
+        };
+
+        this._node?.el?.style?.width &&
+          (cssObj.width = this._node?.el?.style?.width);
+        this._node?.el?.style?.height &&
+          (cssObj.height = this._node?.el?.style?.height);
+
+        // reset el style
+        this._node.el.style = this.startPos.selectStyle;
+        onDragEnd?.(cssObj, this._node);
       });
 
     // 重置标志位
-    this.startDrag = false;
+    this.startDrag = this.startMoveDir = false;
     this.refMask.style.display = "none";
     this.ref.style.zIndex = 2;
+    this.refTopHorLine.setPos({ size: 0 });
+    this.refBottomHorLine.setPos({ size: 0 });
+    this.refLeftVerLine.setPos({ size: 0 });
+    this.refRightVerLine.setPos({ size: 0 });
   }
 
   handleDel() {
@@ -219,7 +356,7 @@ export default class SelectGhost extends React.PureComponent {
     const { ctx, canResize, onDrag, onDragStart, onDragEnd, onDel } =
       this.props;
 
-    return (
+    return createPortal(
       <>
         <div
           ref={(_) => (this.ref = _)}
@@ -269,8 +406,14 @@ export default class SelectGhost extends React.PureComponent {
             <div className="panel-canvas-base-select-ghost-drag" title="拖动">
               <img src={SvgDrag} />
             </div>
-            <div className="panel-canvas-base-select-ghost-copy" title="复制">
+            {/* <div className="panel-canvas-base-select-ghost-copy" title="复制">
               <img src={SvgCopy} />
+            </div> */}
+            <div className="panel-canvas-base-select-ghost-top" title="置顶">
+              <img src={SvgTop} />
+            </div>
+            <div className="panel-canvas-base-select-ghost-bottom" title="置底">
+              <img src={SvgBottom} />
             </div>
             <div
               className="panel-canvas-base-select-ghost-del"
@@ -285,7 +428,12 @@ export default class SelectGhost extends React.PureComponent {
           ref={(_) => (this.refMask = _)}
           className="panel-canvas-base-select-ghost-mask"
         ></div>
-      </>
+        <Line ref={(_) => (this.refTopHorLine = _)} />
+        <Line ref={(_) => (this.refBottomHorLine = _)} />
+        <Line type="ver" ref={(_) => (this.refLeftVerLine = _)} />
+        <Line type="ver" ref={(_) => (this.refRightVerLine = _)} />
+      </>,
+      this.portalDom
     );
   }
 }

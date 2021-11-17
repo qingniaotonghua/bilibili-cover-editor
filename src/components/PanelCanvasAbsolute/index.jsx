@@ -183,8 +183,10 @@ class PanelCanvasAbsolute extends React.Component {
       cssParse.stylesheet.rules[0].declarations.map((item) => {
         cssObj[item.property] = item.value;
       });
-      cssObj.left = style.left;
-      cssObj.top = style.top;
+
+      Object.entries(style).map(([key, value]) => {
+        cssObj[key] = value;
+      });
 
       dslManager.setPageDslProp(
         "css",
@@ -213,6 +215,7 @@ class PanelCanvasAbsolute extends React.Component {
     return (
       <div
         className="panel-canvas-absolute"
+        id="panel-canvas-absolute"
         onClickCapture={this.handleOnClickCapture}
         onClick={this.handleOnClick}
         onDragOver={this.handleOnDragOver}
@@ -222,7 +225,9 @@ class PanelCanvasAbsolute extends React.Component {
         {/* {!children ? <div className="panel-canvas-empty-block"></div> : null} */}
         <SelectGhost
           ref={(_) => (this.refSelectGhost = _)}
+          canvasDomId="panel-canvas-absolute"
           ctx={ctx}
+          canResize
           onDragStart={this.handleSelectGhostOnDragStart}
           onDragEnd={this.handleSelectGhostOnDragEnd}
           onDel={this.handleSelectGhostOnDel}

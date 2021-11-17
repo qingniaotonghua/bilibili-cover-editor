@@ -14,7 +14,6 @@ export default class extends React.Component {
       <img
         className={classnames(className, "banner-picture")}
         src={url}
-        style={{ width }}
       />
     );
   }

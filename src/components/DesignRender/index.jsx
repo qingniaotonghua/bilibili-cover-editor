@@ -4,6 +4,8 @@ import classnames from "classnames";
 import { observer } from "mobx-react";
 import utils from "./utils";
 
+import "./index.less";
+
 const logger = new Logger({
   name: "le-DesignRender",
   level: "error",
