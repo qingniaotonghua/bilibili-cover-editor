@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM, { createPortal } from "react-dom";
 import { throttle } from "lodash";
+import Logger from "lp-logger";
 import Line from "./line";
 
 import SvgDel from "./images/del.svg";
@@ -10,6 +11,11 @@ import SvgTop from "./images/top.svg";
 import SvgBottom from "./images/bottom.svg";
 
 import "./index.less";
+
+const logger = new Logger({
+  name: "le-SelectGhost",
+  level: "error",
+});
 
 export default class SelectGhost extends React.PureComponent {
   static defaultProps = {
@@ -320,8 +326,8 @@ export default class SelectGhost extends React.PureComponent {
     (this.startDrag || this.startMoveDir) &&
       setTimeout(() => {
         const cssObj = {
-          left: this._node?.el?.style.left || 0,
-          top: this._node?.el?.style.top || 0,
+          left: (this._node?.el?.offsetLeft || 0) + "px",
+          top: (this._node?.el?.offsetTop || 0) + "px",
         };
 
         this._node?.el?.style?.width &&
