@@ -219,37 +219,39 @@ class PanelCanvasAbsolute extends React.Component {
     logger.log("render");
 
     return (
-      <div
-        className="panel-canvas-absolute"
-        id={this.containerId}
-        onClickCapture={this.handleOnClickCapture}
-        onClick={this.handleOnClick}
-        onDragOver={this.handleOnDragOver}
-        onDrop={this.handleOnDrop}
-        ref={(_) => (this.refCanvas = _)}
-      >
-        {/* {!children ? <div className="panel-canvas-empty-block"></div> : null} */}
-        <SelectGhost
-          ref={(_) => (this.refSelectGhost = _)}
-          canvasDomId={this.containerId}
-          ctx={ctx}
-          canResize
-          onDragStart={this.handleSelectGhostOnDragStart}
-          onDragEnd={this.handleSelectGhostOnDragEnd}
-          onDel={this.handleSelectGhostOnDel}
-        />
-        <HoverGhost ref={(_) => (this.refHoverGhost = _)} />
+      <div>
+        <div
+          className="panel-canvas-absolute"
+          id={this.containerId}
+          onClickCapture={this.handleOnClickCapture}
+          onClick={this.handleOnClick}
+          onDragOver={this.handleOnDragOver}
+          onDrop={this.handleOnDrop}
+          ref={(_) => (this.refCanvas = _)}
+        >
+          {/* {!children ? <div className="panel-canvas-empty-block"></div> : null} */}
+          <SelectGhost
+            ref={(_) => (this.refSelectGhost = _)}
+            canvasDomId={this.containerId}
+            ctx={ctx}
+            canResize
+            onDragStart={this.handleSelectGhostOnDragStart}
+            onDragEnd={this.handleSelectGhostOnDragEnd}
+            onDel={this.handleSelectGhostOnDel}
+          />
+          <HoverGhost ref={(_) => (this.refHoverGhost = _)} />
 
-        {/* todo: 处理 给el自动加 absolute ，需要给 dsl 自动加这个属性
+          {/* todo: 处理 给el自动加 absolute ，需要给 dsl 自动加这个属性
         如果有 transition 的el，是否要给它覆盖 还是怎样？
         */}
-        <DesignRender
-          ref={(_) => (this.refDesignRender = _)}
-          className="panel-canvas-absolute-render"
-          dsl={dslManager.dsl.page}
-          component={component}
-          style={{ height: "100%" }}
-        />
+          <DesignRender
+            ref={(_) => (this.refDesignRender = _)}
+            className="panel-canvas-absolute-render"
+            dsl={dslManager.dsl.page}
+            component={component}
+            style={{ height: "100%" }}
+          />
+        </div>
       </div>
     );
   }

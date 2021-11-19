@@ -22,14 +22,31 @@ class PanelGenImg extends React.Component {
   handleOpenDialog() {
     const { ctx } = this.props;
     const hideMsg = message.loading("生成中……");
+    const canvasDOM = document.getElementById(
+      ctx.get("skeleton.canvas").containerId
+    );
+
+    // bilibili pading
+    const canvasWidth = canvasDOM.offsetWidth;
+    const canvasHeight = canvasDOM.offsetHeight;
+    const ratio = 2917 / canvasWidth;
+    const canvasParentDom = canvasDOM.parentElement;
+
+    canvasParentDom.style.padding = `${80 / ratio}px ${218 / ratio}px`;
+    canvasParentDom.style.width = canvasWidth + "px";
+    canvasParentDom.style.height = canvasHeight + "px";
+    canvasParentDom.style.boxSizing = "content-box";
+
     html2canvas(
-      document.getElementById(ctx.get("skeleton.canvas").containerId),
+      document.getElementById(ctx.get("skeleton.canvas").containerId)
+        .parentElement,
       {
         allowTaint: true,
         useCORS: true,
         scale: 4,
       }
     ).then((canvas) => {
+      canvasParentDom.style = "";
       hideMsg();
       this.setState(
         {

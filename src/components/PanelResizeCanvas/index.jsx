@@ -10,8 +10,11 @@ class PanelResizeCanvas extends React.Component {
 
     this.state = {
       // 16 : 9
-      x: 720,
-      y: 405,
+      // x: 720,
+      // y: 405,
+      // bilibili size
+      x: 686,
+      y: 390,
     };
   }
 
