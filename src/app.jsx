@@ -1,7 +1,7 @@
 import React from "react";
 import DSL from "./store";
 import Skeleton from "./components/Skeleton";
-import PanelSave from "./components/PanelSave";
+import PanelGenImg from "./components/PanelGenImg";
 import PanelImport from "./components/PanelImport";
 import PanelLogo from "./components/PanelLogo";
 import PanelComponent from "./components/PanelComponent";
@@ -102,11 +102,11 @@ class App extends React.Component {
             },
             {
               align: "right",
-              content: <PanelImport />,
+              content: <PanelGenImg />,
             },
             {
               align: "right",
-              content: <PanelSave />,
+              content: <PanelImport />,
             },
           ]}
           leftArea={[
