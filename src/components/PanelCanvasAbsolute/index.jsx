@@ -18,6 +18,7 @@ class PanelCanvasAbsolute extends React.Component {
   constructor(props) {
     super(props);
 
+    this.containerId = "panel-canvas-absolute";
     this.currentHover =
       this.currentSelect =
       this.currentDragHover =
@@ -41,6 +42,11 @@ class PanelCanvasAbsolute extends React.Component {
   }
 
   componentDidMount() {
+    const { ctx } = this.props;
+
+    ctx.set("skeleton.canvas", {
+      containerId: this.containerId,
+    });
     window.document.addEventListener("mousemove", this.handleOnMouseOver);
     window.document.addEventListener("dragover", this.handleWinOnDragOver);
   }
@@ -215,7 +221,7 @@ class PanelCanvasAbsolute extends React.Component {
     return (
       <div
         className="panel-canvas-absolute"
-        id="panel-canvas-absolute"
+        id={this.containerId}
         onClickCapture={this.handleOnClickCapture}
         onClick={this.handleOnClick}
         onDragOver={this.handleOnDragOver}
@@ -225,7 +231,7 @@ class PanelCanvasAbsolute extends React.Component {
         {/* {!children ? <div className="panel-canvas-empty-block"></div> : null} */}
         <SelectGhost
           ref={(_) => (this.refSelectGhost = _)}
-          canvasDomId="panel-canvas-absolute"
+          canvasDomId={this.containerId}
           ctx={ctx}
           canResize
           onDragStart={this.handleSelectGhostOnDragStart}

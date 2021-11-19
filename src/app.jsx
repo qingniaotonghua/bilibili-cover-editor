@@ -7,6 +7,7 @@ import PanelLogo from "./components/PanelLogo";
 import PanelComponent from "./components/PanelComponent";
 import PanelAttribute from "./components/PanelAttribute";
 import PanelCanvasAbsolute from "./components/PanelCanvasAbsolute";
+import PanelResizeCanvas from "./components/PanelResizeCanvas";
 import components from "./components/ComponentBanner";
 import event from "./utils/SingleEventBus";
 
@@ -107,6 +108,10 @@ class App extends React.Component {
             {
               align: "right",
               content: <PanelImport />,
+            },
+            {
+              align: "center",
+              content: <PanelResizeCanvas />,
             },
           ]}
           leftArea={[

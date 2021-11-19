@@ -20,12 +20,16 @@ class PanelGenImg extends React.Component {
   }
 
   handleOpenDialog() {
+    const { ctx } = this.props;
     const hideMsg = message.loading("生成中……");
-    html2canvas(document.getElementById("panel-canvas-absolute"), {
-      allowTaint: true,
-      useCORS: true,
-      scale: 1,
-    }).then((canvas) => {
+    html2canvas(
+      document.getElementById(ctx.get("skeleton.canvas").containerId),
+      {
+        allowTaint: true,
+        useCORS: true,
+        scale: 4,
+      }
+    ).then((canvas) => {
       hideMsg();
       this.setState(
         {
@@ -67,13 +71,16 @@ class PanelGenImg extends React.Component {
           onCancel={this.handleCloseDialog}
           maskClosable={false}
           footer={[
-            <Button type="primary" onClick={this.handleDownload}>
+            <Button type="primary" onClick={this.handleDownload} key="1">
               下载图片
             </Button>,
           ]}
         >
           <a ref={(_) => (this.refDownloadA = _)}></a>
-          <img style={{ width: "100%" }} ref={(_) => (this.refPreview = _)} />
+          <img
+            style={{ width: "100%", border: "1px dashed " }}
+            ref={(_) => (this.refPreview = _)}
+          />
         </Modal>
       </div>
     );
