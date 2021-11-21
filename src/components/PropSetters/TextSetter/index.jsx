@@ -9,8 +9,10 @@ export default class extends React.Component {
   }
 
   render() {
-    const { value } = this.props;
+    const { value, setValue, ...otherProps } = this.props;
 
-    return <Input value={value} onChange={(e) => this.onChange(e)} />;
+    return (
+      <Input value={value} onChange={(e) => this.onChange(e)} {...otherProps} />
+    );
   }
 }

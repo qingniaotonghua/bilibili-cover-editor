@@ -66,11 +66,13 @@ class PanelAttribute extends React.Component {
             ?.map((item, index) => (
               <div key={index} className="panel-attribute-item">
                 <div className="panel-attribute-item-title">{item.title}</div>
-                {React.cloneElement(item.setter, {
-                  value: dslInfo.props[item.name],
-                  setValue: (value) =>
-                    dslManager.setPageDslProp(item.name, value, dslInfo.id),
-                })}
+                <div className="panel-attribute-item-content">
+                  {React.cloneElement(item.setter, {
+                    value: dslInfo.props[item.name],
+                    setValue: (value) =>
+                      dslManager.setPageDslProp(item.name, value, dslInfo.id),
+                  })}
+                </div>
               </div>
             ))}
           <div style={{ fontSize: 12, color: "#ccc" }}>

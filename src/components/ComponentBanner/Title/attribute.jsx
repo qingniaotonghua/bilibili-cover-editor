@@ -34,8 +34,27 @@ export default {
       setter: <Setters.TextSetter />,
     },
     {
+      name: "type",
+      title: "类型",
+      description: "",
+      supportVariable: true,
+      value: "lvyou",
+      setter: (
+        <Setters.SelectSetter
+          dataSource={[
+            { title: "开箱", value: "kaixiang" },
+            { title: "旅游", value: "lvyou" },
+            { title: "健身", value: "jianshen" },
+            { title: "航拍", value: "hangpai" },
+            { title: "美食", value: "meishi" },
+            { title: "音乐", value: "yinyue" },
+          ]}
+        />
+      ),
+    },
+    {
       name: "css",
-      value: ":root{font-size: 40px;}",
+      value: ":root{}",
       display: "none",
     },
   ],

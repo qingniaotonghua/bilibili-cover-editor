@@ -9,7 +9,13 @@ export default class Page extends React.Component {
   }
 
   render() {
-    const { title, className } = this.props;
-    return <div className={classnames(className, "banner-title")}>{title}</div>;
+    const { title, type, className } = this.props;
+    return (
+      <div
+        className={classnames(className, "banner-title", "banner-title-" + type)}
+      >
+        {title}
+      </div>
+    );
   }
 }

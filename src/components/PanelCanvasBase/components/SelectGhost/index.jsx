@@ -70,9 +70,10 @@ export default class SelectGhost extends React.PureComponent {
   setStyle(styles) {
     const el = this.getEl();
 
-    Object.entries(styles).map((item) => {
-      el.style[item[0]] = item[1];
-    });
+    el &&
+      Object.entries(styles).map((item) => {
+        el.style[item[0]] = item[1];
+      });
   }
 
   setName(text) {

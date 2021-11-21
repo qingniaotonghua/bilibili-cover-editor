@@ -26,62 +26,27 @@ components.map((item) => {
 // ctx dsl
 // todo: absolute page 如何处理？ page 是一个页面的基本 root 元素，默认是应该存在的，是否由平台侧托管，而不依赖于物料侧？
 const dslInstance = new DSL({
-  page: [],
-  // page: [
-  //   {
-  //     id: "Button_b82839fd",
-  //     componentName: "Button",
-  //     props: {
-  //       content: "按钮1",
-  //       onClick: {
-  //         type: "JSFx",
-  //         value: "function() {window.alert(123)}",
-  //       },
-  //     },
-  //   },
-  //   {
-  //     id: "Image_c8sfklae",
-  //     componentName: "Image",
-  //     props: {
-  //       src: "https://img.alicdn.com/imgextra/i2/O1CN01OrHrMH1JfEY8c1aW2_!!6000000001055-2-tps-700-700.png",
-  //       width: 120,
-  //     },
-  //     css: "border: 1px solid #f00; top: 100px; left: 300px;",
-  //   },
-  // ],
+  page: [
+    {
+      id: "Picture_xJ27Wh9O3muw6haQPoKsO",
+      componentName: "Picture",
+      props: {
+        url: "https://img.alicdn.com/imgextra/i1/O1CN01CcVlF91ZlDb0Mp6Gr_!!6000000003234-0-tps-1100-641.jpg",
+        css: ":root{width: 100%}",
+      },
+    },
+    {
+      id: "Title_Hq6ZGVsCSIvMP_kB8udl2",
+      componentName: "Title",
+      props: {
+        title: "骁a",
+        type: "lvyou",
+        css: ":root {left:0px;top:191px;width:686px}",
+      },
+    },
+  ],
 });
 ctx.set("dsl", dslInstance);
-
-const standDSL = `[
-  {
-    "id": "Page_a8758f9d",
-    "componentName": "Page",
-    "props": {},
-    "css": "",
-    "children": [
-      {
-        "id": "Button_b82839fd",
-        "componentName": "Button",
-        "props": {
-          "content": "按钮1",
-          "onClick": {
-            "type": "JSFx",
-            "value": "function() {window.alert(123)}"
-          }
-        }
-      },
-      {
-        "id": "Image_c8sfklae",
-        "componentName": "Image",
-        "props": {
-          "src": "https://img.alicdn.com/imgextra/i2/O1CN01OrHrMH1JfEY8c1aW2_!!6000000001055-2-tps-700-700.png",
-          "width": 120
-        },
-        "css": "position: absolute;"
-      }
-    ]
-  }
-]`;
 
 class App extends React.Component {
   constructor(props) {
