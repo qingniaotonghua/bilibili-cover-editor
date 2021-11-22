@@ -19,14 +19,22 @@ class DesignRender extends React.Component {
 
   render() {
     logger.log("render");
-    const { dsl, component, style = {}, className } = this.props;
+    const {
+      dsl,
+      component,
+      style = {},
+      className,
+      getComponentInstance,
+    } = this.props;
 
     // todo: clear unuse style
     utils.renderStyle(dsl).map((item) => utils.appendStyle(item));
 
     return (
       <div className={classnames("design-render", className)} style={style}>
-        {utils.renderSchema(dsl, component, this)}
+        {utils.renderSchema(dsl, component, this, {
+          ref: getComponentInstance,
+        })}
       </div>
     );
   }

@@ -84,7 +84,7 @@ function parseProps(props, context) {
 }
 
 // 渲染 Schema
-function renderSchema(schema, components, context) {
+function renderSchema(schema, components, context, props = {}) {
   if (!schema) {
     return null;
   }
@@ -101,8 +101,9 @@ function renderSchema(schema, components, context) {
           key,
           __componentName: item.componentName,
           __id: item.id,
+          ...props,
         },
-        renderSchema(item.children, components, context)
+        renderSchema(item.children, components, context, props)
       );
     }
 

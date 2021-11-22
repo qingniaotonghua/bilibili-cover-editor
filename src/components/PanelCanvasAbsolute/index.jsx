@@ -19,6 +19,7 @@ class PanelCanvasAbsolute extends React.Component {
     super(props);
 
     this.containerId = "panel-canvas-absolute";
+    this.componentInstance = new Map();
     this.currentHover =
       this.currentSelect =
       this.currentDragHover =
@@ -39,6 +40,8 @@ class PanelCanvasAbsolute extends React.Component {
     this.handleSelectGhostOnDragEnd =
       this.handleSelectGhostOnDragEnd.bind(this);
     this.handleSelectGhostOnDel = this.handleSelectGhostOnDel.bind(this);
+    this.handleGetComponentInstance =
+      this.handleGetComponentInstance.bind(this);
   }
 
   componentDidMount() {
@@ -46,6 +49,8 @@ class PanelCanvasAbsolute extends React.Component {
 
     ctx.set("canvas", {
       containerId: this.containerId,
+      componentInstance: this.componentInstance,
+      selectNodeById: this.selectNodeById.bind(this),
     });
     window.document.addEventListener("mousemove", this.handleOnMouseOver);
     window.document.addEventListener("dragover", this.handleWinOnDragOver);
@@ -80,7 +85,10 @@ class PanelCanvasAbsolute extends React.Component {
       return;
     }
 
-    dslManager.addPageDSL(componentItem);
+    const { id } = dslManager.addPageDSL(componentItem);
+    setTimeout(() => {
+      this.selectNodeById(id);
+    }, 300);
     // console.log("handleOnDrop", dataTransfer.getData("componentName"));
   }
 
@@ -211,6 +219,31 @@ class PanelCanvasAbsolute extends React.Component {
     this.currentSelect = this.currentHover = null;
   }
 
+  handleGetComponentInstance(ref) {
+    if (!ref?.props?.__id) {
+      return;
+    }
+    // todo: 删除sync
+    this.componentInstance.set(ref.props.__id, ref);
+  }
+
+  selectNodeById(id) {
+    const { ctx } = this.props;
+    const dslManager = ctx.get("dsl");
+    const component = ctx.get("component");
+
+    if (!this.componentInstance.get(id)) {
+      return;
+    }
+
+    const node = {
+      el: findDOMNode(this.componentInstance.get(id)),
+      dslInfo: dslManager.getPageDSL(id),
+    };
+    node.componentInfo = component.get(node.dslInfo.componentName);
+    this.refSelectGhost.setNode(node);
+  }
+
   render() {
     const { ctx } = this.props;
     const dslManager = ctx.get("dsl");
@@ -219,6 +252,7 @@ class PanelCanvasAbsolute extends React.Component {
     logger.log("render");
 
     return (
+      // 实现空边距截图效果，所以外面包了一层
       <div>
         <div
           className="panel-canvas-absolute"
@@ -250,6 +284,7 @@ class PanelCanvasAbsolute extends React.Component {
             dsl={dslManager.dsl.page}
             component={component}
             style={{ height: "100%" }}
+            getComponentInstance={this.handleGetComponentInstance}
           />
         </div>
       </div>

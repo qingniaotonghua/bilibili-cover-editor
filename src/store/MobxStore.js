@@ -55,11 +55,15 @@ export default class {
       props[prop.name] = prop.value;
     });
 
-    this.dsl.page.push({
+    const item = {
       id: componentItem.componentName + "_" + nanoid(),
       componentName: componentItem.componentName,
       props,
-    });
+    };
+
+    this.dsl.page.push(item);
+
+    return item;
   }
 
   getPageDSL(id) {
