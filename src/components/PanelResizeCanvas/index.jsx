@@ -23,7 +23,7 @@ class PanelResizeCanvas extends React.Component {
     const { x, y } = this.state;
     setTimeout(() => {
       const canvasDOM = document.getElementById(
-        ctx.get("skeleton.canvas").containerId
+        ctx.get("canvas").containerId
       );
 
       canvasDOM.style.width = x + "px";
@@ -34,7 +34,7 @@ class PanelResizeCanvas extends React.Component {
   handleOnChange(name, value) {
     const { ctx } = this.props;
     const canvasDOM = document.getElementById(
-      ctx.get("skeleton.canvas").containerId
+      ctx.get("canvas").containerId
     );
     this.setState({ [name]: value }, () => {
       const { x, y } = this.state;

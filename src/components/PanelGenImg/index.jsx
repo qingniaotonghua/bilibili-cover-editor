@@ -23,7 +23,7 @@ class PanelGenImg extends React.Component {
     const { ctx } = this.props;
     const hideMsg = message.loading("生成中……");
     const canvasDOM = document.getElementById(
-      ctx.get("skeleton.canvas").containerId
+      ctx.get("canvas").containerId
     );
 
     // bilibili pading
@@ -38,7 +38,7 @@ class PanelGenImg extends React.Component {
     canvasParentDom.style.boxSizing = "content-box";
 
     html2canvas(
-      document.getElementById(ctx.get("skeleton.canvas").containerId)
+      document.getElementById(ctx.get("canvas").containerId)
         .parentElement,
       {
         allowTaint: true,

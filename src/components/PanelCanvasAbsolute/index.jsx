@@ -44,7 +44,7 @@ class PanelCanvasAbsolute extends React.Component {
   componentDidMount() {
     const { ctx } = this.props;
 
-    ctx.set("skeleton.canvas", {
+    ctx.set("canvas", {
       containerId: this.containerId,
     });
     window.document.addEventListener("mousemove", this.handleOnMouseOver);
