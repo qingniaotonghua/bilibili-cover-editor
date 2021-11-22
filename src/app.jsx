@@ -32,7 +32,7 @@ const dslInstance = new DSL({
       componentName: "Picture",
       props: {
         url: "https://img.alicdn.com/imgextra/i1/O1CN01CcVlF91ZlDb0Mp6Gr_!!6000000003234-0-tps-1100-641.jpg",
-        css: ":root{width: 100%}",
+        css: ":root{width: 100%;z-index:0;}",
       },
     },
     {
@@ -41,7 +41,7 @@ const dslInstance = new DSL({
       props: {
         title: "骁a",
         type: "lvyou",
-        css: ":root {left:0px;top:191px;width:686px}",
+        css: ":root {left:0px;top:191px;width:686px;z-index:1;}",
       },
     },
   ],

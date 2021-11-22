@@ -41,6 +41,8 @@ export default class SelectGhost extends React.PureComponent {
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleDel = this.handleDel.bind(this);
+    this.handleToBottom = this.handleToBottom.bind(this);
+    this.handleToTop = this.handleToTop.bind(this);
 
     this.portalDom = document.createElement("div");
     document.body.appendChild(this.portalDom);
@@ -359,6 +361,76 @@ export default class SelectGhost extends React.PureComponent {
     this.setNode(null);
   }
 
+  handleToTop() {
+    const { ctx, onToTop } = this.props;
+    const dslManager = ctx.get("dsl");
+    const { componentInstance } = ctx.get("canvas");
+    const currentId = this._node.dslInfo.id;
+    const currentCss = this._node.dslInfo.props.css;
+    const zIndexsComponent = {};
+    let replaceId = null;
+    let replaceCss = "";
+
+    dslManager.dsl.page.map(({ id, props }, index, arr) => {
+      const ref = componentInstance.get(id);
+      const el = ReactDOM.findDOMNode(ref);
+      const zIndex = getComputedStyle(el).getPropertyValue("z-index");
+
+      if (zIndex == arr.length - 1) {
+        replaceId = id;
+        replaceCss = props.css;
+      }
+
+      zIndexsComponent[id] = zIndex;
+    });
+
+    if (!(zIndexsComponent[currentId] == dslManager.dsl.page.length - 1)) {
+      onToTop?.({
+        currentId,
+        currentCss,
+        replaceId,
+        replaceCss,
+        value: dslManager.dsl.page.length - 1,
+        swapValue: getComputedStyle(this._node.el).getPropertyValue("z-index"),
+      });
+    }
+  }
+
+  handleToBottom() {
+    const { ctx, onToBottom } = this.props;
+    const dslManager = ctx.get("dsl");
+    const { componentInstance } = ctx.get("canvas");
+    const currentId = this._node.dslInfo.id;
+    const currentCss = this._node.dslInfo.props.css;
+    const zIndexsComponent = {};
+    let replaceId = null;
+    let replaceCss = "";
+
+    dslManager.dsl.page.map(({ id, props }, index, arr) => {
+      const ref = componentInstance.get(id);
+      const el = ReactDOM.findDOMNode(ref);
+      const zIndex = getComputedStyle(el).getPropertyValue("z-index");
+
+      if (zIndex == 0) {
+        replaceId = id;
+        replaceCss = props.css;
+      }
+
+      zIndexsComponent[id] = zIndex;
+    });
+
+    if (!(zIndexsComponent[currentId] == 0)) {
+      onToBottom?.({
+        currentId,
+        currentCss,
+        replaceId,
+        replaceCss,
+        value: 0,
+        swapValue: getComputedStyle(this._node.el).getPropertyValue("z-index"),
+      });
+    }
+  }
+
   render() {
     const { ctx, canResize, onDrag, onDragStart, onDragEnd, onDel } =
       this.props;
@@ -416,10 +488,18 @@ export default class SelectGhost extends React.PureComponent {
             {/* <div className="panel-canvas-base-select-ghost-copy" title="复制">
               <img src={SvgCopy} />
             </div> */}
-            <div className="panel-canvas-base-select-ghost-top" title="置顶">
+            <div
+              className="panel-canvas-base-select-ghost-top"
+              title="置顶"
+              onClick={this.handleToTop}
+            >
               <img src={SvgTop} />
             </div>
-            <div className="panel-canvas-base-select-ghost-bottom" title="置底">
+            <div
+              className="panel-canvas-base-select-ghost-bottom"
+              title="置底"
+              onClick={this.handleToBottom}
+            >
               <img src={SvgBottom} />
             </div>
             <div

@@ -42,6 +42,8 @@ class PanelCanvasAbsolute extends React.Component {
     this.handleSelectGhostOnDel = this.handleSelectGhostOnDel.bind(this);
     this.handleGetComponentInstance =
       this.handleGetComponentInstance.bind(this);
+    this.handleSelectGhostOnToZIndex =
+      this.handleSelectGhostOnToZIndex.bind(this);
   }
 
   componentDidMount() {
@@ -87,9 +89,41 @@ class PanelCanvasAbsolute extends React.Component {
 
     const { id } = dslManager.addPageDSL(componentItem);
     setTimeout(() => {
-      this.selectNodeById(id);
+      const { dslInfo } = this.selectNodeById(id);
+
+      const cssObj = this._mergeCss(dslInfo.props.css, {
+        "z-index": dslManager.dsl.page.length - 1,
+      });
+      dslManager.setPageDslProp(
+        "css",
+        `:root {${Object.keys(cssObj)
+          .map((name) => `${name}:${cssObj[name]}`)
+          .join(";")}}`,
+        dslInfo.id
+      );
     }, 300);
     // console.log("handleOnDrop", dataTransfer.getData("componentName"));
+  }
+
+  _mergeCss(cssText, style = {}) {
+    const cssParse = css.parse(cssText, { silent: true });
+
+    if (cssParse.stylesheet.parsingErrors.length) {
+      logger.error("源码错误: " + cssParse.stylesheet.parsingErrors);
+      return {};
+    } else {
+      const cssObj = {};
+
+      cssParse.stylesheet.rules[0].declarations.map((item) => {
+        cssObj[item.property] = item.value;
+      });
+
+      Object.entries(style).map(([key, value]) => {
+        cssObj[key] = value;
+      });
+
+      return cssObj;
+    }
   }
 
   handleOnMouseOver(e) {
@@ -184,32 +218,16 @@ class PanelCanvasAbsolute extends React.Component {
   handleSelectGhostOnDragEnd(style, { dslInfo }) {
     const { ctx } = this.props;
     const dslManager = ctx.get("dsl");
-    const cssParse = css.parse(dslInfo.props.css, { silent: true });
-
+    const cssObj = this._mergeCss(dslInfo.props.css, style);
     this.draging = false;
 
-    if (cssParse.stylesheet.parsingErrors.length) {
-      logger.error("源码错误: " + cssParse.stylesheet.parsingErrors);
-      return false;
-    } else {
-      const cssObj = {};
-
-      cssParse.stylesheet.rules[0].declarations.map((item) => {
-        cssObj[item.property] = item.value;
-      });
-
-      Object.entries(style).map(([key, value]) => {
-        cssObj[key] = value;
-      });
-
-      dslManager.setPageDslProp(
-        "css",
-        `:root {${Object.keys(cssObj)
-          .map((name) => `${name}:${cssObj[name]}`)
-          .join(";")}}`,
-        dslInfo.id
-      );
-    }
+    dslManager.setPageDslProp(
+      "css",
+      `:root {${Object.keys(cssObj)
+        .map((name) => `${name}:${cssObj[name]}`)
+        .join(";")}}`,
+      dslInfo.id
+    );
   }
   handleSelectGhostOnDel({ dslInfo }) {
     const { ctx } = this.props;
@@ -227,6 +245,41 @@ class PanelCanvasAbsolute extends React.Component {
     this.componentInstance.set(ref.props.__id, ref);
   }
 
+  handleSelectGhostOnToZIndex({
+    currentId,
+    currentCss,
+    replaceId,
+    replaceCss,
+    value,
+    swapValue,
+  }) {
+    const { ctx } = this.props;
+    const dslManager = ctx.get("dsl");
+
+    if (currentId == replaceId) {
+      return;
+    }
+
+    dslManager.setPageDslProp(
+      "css",
+      `:root {${Object.entries(this._mergeCss(currentCss, { "z-index": value }))
+        .map(([name, value]) => `${name}:${value}`)
+        .join(";")}}`,
+      currentId
+    );
+
+    replaceId &&
+      dslManager.setPageDslProp(
+        "css",
+        `:root {${Object.entries(
+          this._mergeCss(replaceCss, { "z-index": swapValue })
+        )
+          .map(([name, value]) => `${name}:${value}`)
+          .join(";")}}`,
+        replaceId
+      );
+  }
+
   selectNodeById(id) {
     const { ctx } = this.props;
     const dslManager = ctx.get("dsl");
@@ -242,6 +295,7 @@ class PanelCanvasAbsolute extends React.Component {
     };
     node.componentInfo = component.get(node.dslInfo.componentName);
     this.refSelectGhost.setNode(node);
+    return node;
   }
 
   render() {
@@ -272,6 +326,8 @@ class PanelCanvasAbsolute extends React.Component {
             onDragStart={this.handleSelectGhostOnDragStart}
             onDragEnd={this.handleSelectGhostOnDragEnd}
             onDel={this.handleSelectGhostOnDel}
+            onToTop={this.handleSelectGhostOnToZIndex}
+            onToBottom={this.handleSelectGhostOnToZIndex}
           />
           <HoverGhost ref={(_) => (this.refHoverGhost = _)} />
 
