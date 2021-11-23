@@ -101,6 +101,8 @@ export default class SelectGhost extends React.PureComponent {
     const {
       left: boundLeft,
       top: boundTop,
+      right: boundRight,
+      bottom: boundBottom,
       width: boundWidth,
       height: boundHeight,
     } = el.getBoundingClientRect();
@@ -124,7 +126,34 @@ export default class SelectGhost extends React.PureComponent {
       display: "block",
       // transform: ,
     });
-    // this.setName(componentInfo.title);
+
+    // op操作区位置重置
+    const opHeight = 30;
+    const opStyle = {
+      left: "unset",
+      top: "unset",
+      right: "unset",
+      bottom: "unset",
+    };
+
+    if (boundTop < opHeight) {
+      opStyle.bottom = -1 * opHeight + "px";
+    } else if (boundBottom < opHeight) {
+      opStyle.top = -1 * opHeight + "px";
+    } else {
+      opStyle.top = -1 * opHeight + "px";
+    }
+    if (boundLeft < 0) {
+      opStyle.right = 0;
+    } else if (boundRight > window.innerWidth) {
+      opStyle.left = 0;
+    } else {
+      opStyle.right = 0;
+    }
+
+    Object.entries(opStyle).map(
+      ([name, value]) => (this.refOp.style[name] = value)
+    );
   }
 
   // todo: 优化只有resize canvas才触发
@@ -481,7 +510,10 @@ export default class SelectGhost extends React.PureComponent {
 
           <div className="panel-canvas-base-select-ghost-rotate"></div>
           {/* todo: 边界判断 位置放置 */}
-          <div className="panel-canvas-base-select-ghost-op">
+          <div
+            className="panel-canvas-base-select-ghost-op"
+            ref={(_) => (this.refOp = _)}
+          >
             <div className="panel-canvas-base-select-ghost-drag" title="拖动">
               <img src={SvgDrag} />
             </div>
