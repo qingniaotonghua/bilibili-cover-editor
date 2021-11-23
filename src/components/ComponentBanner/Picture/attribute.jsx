@@ -1,4 +1,5 @@
 import Setters from "./../../PropSetters";
+import UploaderSetter from "./setter.uploader";
 import view from "./designView";
 
 export default {
@@ -32,7 +33,7 @@ export default {
       supportVariable: true,
       value:
         "https://img.alicdn.com/imgextra/i1/O1CN01CcVlF91ZlDb0Mp6Gr_!!6000000003234-0-tps-1100-641.jpg",
-      setter: <Setters.TextSetter />,
+      setter: <UploaderSetter />,
       // display: "none",
     },
     // {
