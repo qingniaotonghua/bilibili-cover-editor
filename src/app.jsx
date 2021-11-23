@@ -8,6 +8,7 @@ import PanelComponent from "./components/PanelComponent";
 import PanelAttribute from "./components/PanelAttribute";
 import PanelCanvasAbsolute from "./components/PanelCanvasAbsolute";
 import PanelResizeCanvas from "./components/PanelResizeCanvas";
+import PanelOutline from "./components/PanelOutline";
 import components from "./components/ComponentBanner";
 import event from "./utils/SingleEventBus";
 
@@ -91,7 +92,7 @@ class App extends React.Component {
               title: "大纲面板",
               hidden: false,
               icon: "https://img.alicdn.com/imgextra/i1/O1CN01ED4RnW1OVgMdOEZkH_!!6000000001711-2-tps-128-128.png",
-              content: <div>大纲面板</div>,
+              content: <PanelOutline />,
             },
             {
               name: "dsl",

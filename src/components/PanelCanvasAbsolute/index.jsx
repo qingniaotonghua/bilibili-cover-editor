@@ -44,6 +44,7 @@ class PanelCanvasAbsolute extends React.Component {
       this.handleGetComponentInstance.bind(this);
     this.handleSelectGhostOnToZIndex =
       this.handleSelectGhostOnToZIndex.bind(this);
+    this.handleOnMouseLeave = this.handleOnMouseLeave.bind(this);
   }
 
   componentDidMount() {
@@ -53,6 +54,7 @@ class PanelCanvasAbsolute extends React.Component {
       containerId: this.containerId,
       componentInstance: this.componentInstance,
       selectNodeById: this.selectNodeById.bind(this),
+      hoverNodeById: this.hoverNodeById.bind(this),
     });
     window.document.addEventListener("mousemove", this.handleOnMouseOver);
     window.document.addEventListener("dragover", this.handleWinOnDragOver);
@@ -127,6 +129,10 @@ class PanelCanvasAbsolute extends React.Component {
   }
 
   handleOnMouseOver(e) {
+    if (!this.refCanvas.contains(e.target)) {
+      return;
+    }
+
     const { target } = e;
     const { ctx } = this.props;
     const fiberId = Object.keys(target).find((key) =>
@@ -155,14 +161,13 @@ class PanelCanvasAbsolute extends React.Component {
       ctx.get("dsl").dsl.page
     );
 
-    this.currentHover = target;
-
     if (!node) {
       this.refHoverGhost.setNode(null);
       return;
     }
 
     this.refHoverGhost.setNode(node.el, node);
+    this.currentHover = target;
   }
 
   handleOnClickCapture(e) {
@@ -286,6 +291,7 @@ class PanelCanvasAbsolute extends React.Component {
     const component = ctx.get("component");
 
     if (!this.componentInstance.get(id)) {
+      this.currentSelect = null;
       return;
     }
 
@@ -295,7 +301,33 @@ class PanelCanvasAbsolute extends React.Component {
     };
     node.componentInfo = component.get(node.dslInfo.componentName);
     this.refSelectGhost.setNode(node);
+    this.currentSelect = node.el;
     return node;
+  }
+
+  hoverNodeById(id) {
+    const { ctx } = this.props;
+    const dslManager = ctx.get("dsl");
+    const component = ctx.get("component");
+
+    if (!this.componentInstance.get(id)) {
+      this.refHoverGhost.setNode(null);
+      this.currentHover = null;
+      return;
+    }
+
+    const node = {
+      el: findDOMNode(this.componentInstance.get(id)),
+      dslInfo: dslManager.getPageDSL(id),
+    };
+    node.componentInfo = component.get(node.dslInfo.componentName);
+    this.refHoverGhost.setNode(node.el, node);
+    this.currentHover = node.el;
+    return node;
+  }
+
+  handleOnMouseLeave() {
+    this.refHoverGhost.setNode(null);
   }
 
   render() {
@@ -315,6 +347,7 @@ class PanelCanvasAbsolute extends React.Component {
           onClick={this.handleOnClick}
           onDragOver={this.handleOnDragOver}
           onDrop={this.handleOnDrop}
+          onMouseLeave={this.handleOnMouseLeave}
           ref={(_) => (this.refCanvas = _)}
         >
           {/* {!children ? <div className="panel-canvas-empty-block"></div> : null} */}

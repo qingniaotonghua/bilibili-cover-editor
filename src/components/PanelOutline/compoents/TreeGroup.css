@@ -1,0 +1,43 @@
+.lp-react-tree-drag-TreeGroup {
+  display: flex;
+  align-items: flex-start;
+  /* margin-bottom: 3px; */
+}
+
+.lp-react-tree-drag-TreeGroup-enter {
+  border-color: red !important;
+  border-left-style: solid !important;
+}
+
+.lp-react-tree-drag-TreeGroup-arrow {
+  padding-left: 3px;
+  padding-bottom: 3px;
+  width: 18px;
+  cursor: pointer;
+  transform: rotate(90deg);
+}
+
+.lp-react-tree-drag-TreeGroup-node {
+  flex-grow: 1;
+}
+
+.lp-react-tree-drag-TreeGroup-node-ch {
+  padding-bottom: 5px;
+}
+
+.lp-react-tree-drag-TreeGroup-node-ch-line {
+  border-left: 1px dotted #666;
+  margin-left: -9px;
+  padding-left: 9px;
+}
+
+.lp-react-tree-drag-TreeGroup-collapse .lp-react-tree-drag-TreeGroup-node-ch {
+  display: none;
+}
+
+.lp-react-tree-drag-TreeGroup-collapse .lp-react-tree-drag-TreeGroup-arrow {
+  transform: rotate(0);
+  padding-left: 3px;
+  padding-top: 3px;
+  padding-bottom: 0;
+}
