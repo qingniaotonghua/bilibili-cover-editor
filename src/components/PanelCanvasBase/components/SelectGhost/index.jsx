@@ -314,31 +314,139 @@ export default class SelectGhost extends React.PureComponent {
       if (this.startPos.dir[0] == "t") {
         // 往上
         {
-          this.ref.style.top = this.startPos.top + diffPos.top + "px";
-          this.ref.style.height = this.startPos.height - diffPos.top + "px";
-          elStyle.top = this.startPos.selectTop + diffPos.top + "px";
-          elStyle.height = this.startPos.height - diffPos.top + "px";
+          // 吸顶判断 顶部
+          let dealTop = this.startPos.top + diffPos.top;
+          if (
+            dealTop >= -1 * this.attractDelta + canvasPosition.top &&
+            dealTop <= this.attractDelta + canvasPosition.top
+          ) {
+            this.ref.style.top = canvasPosition.top + "px";
+            this.ref.style.height =
+              this.startPos.height -
+              (canvasPosition.top - this.startPos.mouseY) +
+              "px";
+            elStyle.top = 0 + "px";
+            elStyle.height =
+              this.startPos.height -
+              (canvasPosition.top - this.startPos.mouseY) +
+              "px";
+
+            this.refTopHorLine.setPos({
+              size: canvasPosition.width + "px",
+              x: canvasPosition.left + "px",
+              y: canvasPosition.top + "px",
+            });
+          } else {
+            this.ref.style.top = this.startPos.top + diffPos.top + "px";
+            this.ref.style.height = this.startPos.height - diffPos.top + "px";
+            elStyle.top = this.startPos.selectTop + diffPos.top + "px";
+            elStyle.height = this.startPos.height - diffPos.top + "px";
+
+            this.refTopHorLine.setPos({ size: 0 });
+          }
         }
       } else if (this.startPos.dir[0] == "b") {
         // 往下
         {
-          this.ref.style.height = this.startPos.height + diffPos.top + "px";
-          elStyle.height = this.startPos.height + diffPos.top + "px";
+          // 吸顶判断 顶部
+          let dealTop = this.startPos.top + diffPos.top;
+          if (
+            dealTop + this.startPos.height >=
+              -1 * this.attractDelta + canvasPosition.bottom &&
+            dealTop + this.startPos.height <=
+              this.attractDelta + canvasPosition.bottom
+          ) {
+            this.ref.style.height =
+              this.startPos.height +
+              (canvasPosition.bottom - this.startPos.mouseY) +
+              "px";
+            elStyle.height =
+              this.startPos.height +
+              (canvasPosition.bottom - this.startPos.mouseY) +
+              "px";
+
+            this.refBottomHorLine.setPos({
+              size: canvasPosition.width + "px",
+              x: canvasPosition.left + "px",
+              y: canvasPosition.bottom + "px",
+            });
+          } else {
+            this.ref.style.height = this.startPos.height + diffPos.top + "px";
+            elStyle.height = this.startPos.height + diffPos.top + "px";
+
+            this.refBottomHorLine.setPos({ size: 0 });
+          }
         }
       }
       if (this.startPos.dir[1] == "l") {
         // 往左
         {
-          this.ref.style.left = this.startPos.left + diffPos.left + "px";
-          this.ref.style.width = this.startPos.width - diffPos.left + "px";
-          elStyle.left = this.startPos.selectLeft + diffPos.left + "px";
-          elStyle.width = this.startPos.width - diffPos.left + "px";
+          let dealLeft = this.startPos.left + diffPos.left;
+
+          // 吸顶判断 左部
+          if (
+            dealLeft >= -1 * this.attractDelta + canvasPosition.left &&
+            dealLeft <= this.attractDelta + canvasPosition.left
+          ) {
+            this.ref.style.left = canvasPosition.left + "px";
+            this.ref.style.width =
+              this.startPos.width -
+              (canvasPosition.left - this.startPos.mouseX) +
+              "px";
+            elStyle.left = 0;
+            elStyle.width =
+              this.startPos.width -
+              (canvasPosition.left - this.startPos.mouseX) +
+              "px";
+
+            this.refLeftVerLine.setPos({
+              size: canvasPosition.height + "px",
+              x: canvasPosition.left + "px",
+              y: canvasPosition.top + "px",
+            });
+          } else {
+            this.ref.style.left = this.startPos.left + diffPos.left + "px";
+            this.ref.style.width = this.startPos.width - diffPos.left + "px";
+            elStyle.left = this.startPos.selectLeft + diffPos.left + "px";
+            elStyle.width = this.startPos.width - diffPos.left + "px";
+
+            this.refLeftVerLine.setPos({
+              size: 0,
+            });
+          }
         }
       } else if (this.startPos.dir[1] == "r") {
         // 往右
         {
-          this.ref.style.width = this.startPos.width + diffPos.left + "px";
-          elStyle.width = this.startPos.width + diffPos.left + "px";
+          let dealLeft = this.startPos.left + diffPos.left;
+
+          // 吸顶判断 右部
+          if (
+            dealLeft + this.startPos.width >=
+              -1 * this.attractDelta + canvasPosition.right &&
+            dealLeft + this.startPos.width <=
+              this.attractDelta + canvasPosition.right
+          ) {
+            this.ref.style.width =
+              this.startPos.width +
+              (canvasPosition.right - this.startPos.mouseX) +
+              "px";
+            elStyle.width =
+              this.startPos.width +
+              (canvasPosition.right - this.startPos.mouseX) +
+              "px";
+
+            this.refRightVerLine.setPos({
+              size: canvasPosition.height + "px",
+              x: canvasPosition.right + "px",
+              y: canvasPosition.top + "px",
+            });
+          } else {
+            this.ref.style.width = this.startPos.width + diffPos.left + "px";
+            elStyle.width = this.startPos.width + diffPos.left + "px";
+
+            this.refRightVerLine.setPos({ size: 0 });
+          }
         }
       }
 

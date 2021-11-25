@@ -75,5 +75,5 @@ function setZIndex(str, value) {
 }
 
 function getZIndex(str) {
-  return str.match(/z-index:\s*(-?\d+?)/)?.[1];
+  return Number(str.match(/z-index:\s*(-?\d+?)/)?.[1]);
 }
