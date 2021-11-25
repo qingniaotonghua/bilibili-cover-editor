@@ -201,7 +201,8 @@ export default class Tree extends React.Component {
             data: this.data,
             key: Date.now(),
           });
-          onChange?.(this.data);
+          JSON.stringify(this.data) != JSON.stringify(this.state.data) &&
+            onChange?.(this.data);
           setTimeout(() => (this.isDraging = false), 100);
         }}
         onDragEnter={(e) => {
