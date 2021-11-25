@@ -130,6 +130,7 @@ class PanelCanvasAbsolute extends React.Component {
 
   handleOnMouseOver(e) {
     if (!this.refCanvas.contains(e.target)) {
+      this.currentHover = null;
       return;
     }
 
@@ -143,6 +144,7 @@ class PanelCanvasAbsolute extends React.Component {
     // 这个判断是有问题的，用该存储 node.el 进行判断，但会影响性能
     if (target == this.currentSelect) {
       this.refHoverGhost.setNode(null);
+      this.currentHover = null;
       return;
     }
 
@@ -152,6 +154,7 @@ class PanelCanvasAbsolute extends React.Component {
 
     if (!fiberId || !this.refCanvas.contains(target)) {
       this.refHoverGhost.setNode(null);
+      this.currentHover = null;
       return;
     }
 
