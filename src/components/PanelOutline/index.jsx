@@ -1,5 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
+import { debounce } from "lodash";
 import Logger from "lp-logger";
 import Tree from "./compoents/Tree";
 
@@ -12,6 +13,20 @@ const logger = new Logger({
 
 export default observer(
   class extends React.Component {
+    constructor(props) {
+      super(props);
+
+      // 防止 setDSL 后，ref 没有挂载完成
+      this.onHover = debounce(this.onHover.bind(this), 100);
+    }
+
+    onHover(item) {
+      const { ctx } = this.props;
+      const canvas = ctx.get("canvas");
+
+      canvas.hoverNodeById(item.id);
+    }
+
     render() {
       const { ctx } = this.props;
       const dslManager = ctx.get("dsl");
@@ -22,14 +37,11 @@ export default observer(
       return (
         <div className="panel-outline">
           <Tree
-            onHover={(item) => {
-              canvas.hoverNodeById(item.id);
-            }}
+            onHover={this.onHover}
             onClick={(item) => {
               canvas.selectNodeById(item.id);
             }}
             onChange={(data) => {
-              console.log("onchange");
               const pageDsl = data.map((item, index, arr) => {
                 const { title, props, ...other } = item;
 

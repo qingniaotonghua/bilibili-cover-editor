@@ -1,6 +1,7 @@
 .panel-canvas-base-select-ghost {
   position: absolute;
-  z-index: 2;
+  // 防止遮住 antd modal 
+  z-index: 999;
   pointer-events: none;
   outline: 2px solid #1890ff;
   display: none;

@@ -375,7 +375,7 @@ export default class SelectGhost extends React.PureComponent {
     // 重置标志位
     this.startDrag = this.startMoveDir = false;
     this.refMask.style.display = "none";
-    this.ref.style.zIndex = 2;
+    this.ref.style.zIndex = 999;
     this.refTopHorLine.setPos({ size: 0 });
     this.refBottomHorLine.setPos({ size: 0 });
     this.refLeftVerLine.setPos({ size: 0 });
