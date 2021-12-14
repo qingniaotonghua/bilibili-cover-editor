@@ -312,6 +312,7 @@ class PanelCanvasAbsolute extends React.Component {
     const { ctx } = this.props;
     const dslManager = ctx.get("dsl");
     const component = ctx.get("component");
+    let el;
 
     if (!this.componentInstance.get(id)) {
       this.refHoverGhost.setNode(null);
@@ -319,8 +320,16 @@ class PanelCanvasAbsolute extends React.Component {
       return;
     }
 
+    // 当 dsl 修改后
+    // react 重新渲染，导致 react 实例还没有挂载到 dom 上，导致报错
+    try {
+      el = findDOMNode(this.componentInstance.get(id));
+    } catch (error) {
+      return;
+    }
+
     const node = {
-      el: findDOMNode(this.componentInstance.get(id)),
+      el,
       dslInfo: dslManager.getPageDSL(id),
     };
     node.componentInfo = component.get(node.dslInfo.componentName);

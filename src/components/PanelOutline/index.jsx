@@ -17,7 +17,7 @@ export default observer(
       super(props);
 
       // 防止 setDSL 后，ref 没有挂载完成
-      this.onHover = debounce(this.onHover.bind(this), 100);
+      this.onHover = debounce(this.onHover.bind(this), 300);
     }
 
     onHover(item) {
