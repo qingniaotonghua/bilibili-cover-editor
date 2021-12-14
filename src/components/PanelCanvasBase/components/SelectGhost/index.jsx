@@ -178,8 +178,9 @@ export default class SelectGhost extends React.PureComponent {
     const el = this._node?.el;
 
     this.startPos = {
-      mouseX: e.pageX,
-      mouseY: e.pageY,
+      // 开始位置需要取真正边上的位置，改用 clientX，来实现配合 getBoundingClientRect 计算真实位置
+      mouseX: e.target.getBoundingClientRect().x + e.target.offsetWidth / 2,
+      mouseY: e.target.getBoundingClientRect().y + +e.target.offsetHeight / 2,
       // ? margin
       width: this.ref.clientWidth,
       height: this.ref.clientHeight,
@@ -218,8 +219,8 @@ export default class SelectGhost extends React.PureComponent {
     const canvasPosition = canvasDom.getBoundingClientRect();
     const elStyle = {};
     let diffPos = {
-      left: e.pageX - this.startPos.mouseX,
-      top: e.pageY - this.startPos.mouseY,
+      left: e.clientX - this.startPos.mouseX,
+      top: e.clientY - this.startPos.mouseY,
     };
 
     // 拖动
