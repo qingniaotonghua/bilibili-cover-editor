@@ -30,11 +30,19 @@ class Skeleton extends React.PureComponent {
   }
 
   componentDidMount() {
-    window.addEventListener("click", this.handleFloatBoxOutsideClickHiden);
+    window.addEventListener(
+      "click",
+      this.handleFloatBoxOutsideClickHiden,
+      true
+    );
   }
 
   componentWillUnmount() {
-    window.removeEventListener("click", this.handleFloatBoxOutsideClickHiden);
+    window.removeEventListener(
+      "click",
+      this.handleFloatBoxOutsideClickHiden,
+      true
+    );
   }
 
   handleFloatBoxOutsideClickHiden(e) {
