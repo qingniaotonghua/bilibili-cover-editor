@@ -23,6 +23,32 @@ class Skeleton extends React.PureComponent {
     };
 
     this.props.ctx.set("skeleton", this);
+
+    this.handleFloatBoxOutsideClickHiden =
+      this.handleFloatBoxOutsideClickHiden.bind(this);
+    this.refLeftArea = this.leftAreaSelectItem = null;
+  }
+
+  componentDidMount() {
+    window.addEventListener("click", this.handleFloatBoxOutsideClickHiden);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("click", this.handleFloatBoxOutsideClickHiden);
+  }
+
+  handleFloatBoxOutsideClickHiden(e) {
+    // left 区域的不处理
+    if (this.refLeftArea?.contains(e.target)) {
+      return;
+    }
+
+    // 不是 flat 类型的不处理
+    if (this.leftAreaSelectItem?.boxType != "float") {
+      return;
+    }
+
+    this.handleDockItemOnSelect();
   }
 
   renderTopArea() {
@@ -72,6 +98,7 @@ class Skeleton extends React.PureComponent {
     const _topArea = [];
     const _bottomArea = [];
     let selectContent = null;
+    this.leftAreaSelectItem = {};
 
     leftArea.map((item) => {
       if (item.hidden || !React.isValidElement(item.content)) {
@@ -80,6 +107,7 @@ class Skeleton extends React.PureComponent {
 
       if (item.name === dockSelectName) {
         selectContent = item.content;
+        this.leftAreaSelectItem = item;
       }
 
       if (item.align === "top" || !item.align) {
@@ -138,12 +166,23 @@ class Skeleton extends React.PureComponent {
 
         {/* 下面这块可以加缓存处理 */}
         {/* class 后面加个 prop 来判断 */}
+        {/* todo: 在这里加入 悬浮显示类型，可拖动宽度效果 */}
         {selectContent ? (
           <div
             className={classnames({
-              "skeleton-left-area-panel-fixed": true,
-              "skeleton-left-area-panel-float": false,
+              "skeleton-left-area-panel-fixed":
+                this.leftAreaSelectItem?.boxType != "float",
+              "skeleton-left-area-panel-float":
+                this.leftAreaSelectItem?.boxType == "float",
             })}
+            style={(() => {
+              if (this.leftAreaSelectItem?.width) {
+                return {
+                  width: this.leftAreaSelectItem.width,
+                };
+              }
+              return {};
+            })()}
           >
             {React.cloneElement(selectContent, { ctx: ctx })}
           </div>
@@ -219,7 +258,12 @@ class Skeleton extends React.PureComponent {
       <div className="skeleton">
         <div className="skeleton-top-area">{this.renderTopArea()}</div>
         <div className="skeleton-bottom">
-          <div className="skeleton-left-area">{this.renderLeftArea()}</div>
+          <div
+            className="skeleton-left-area"
+            ref={(_) => (this.refLeftArea = _)}
+          >
+            {this.renderLeftArea()}
+          </div>
           <div className="skeleton-center">
             {this.renderToolbar()}
             {this.renderCenterArea()}

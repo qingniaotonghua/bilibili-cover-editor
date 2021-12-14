@@ -9,6 +9,7 @@ import PanelAttribute from "./components/PanelAttribute";
 import PanelCanvasAbsolute from "./components/PanelCanvasAbsolute";
 import PanelResizeCanvas from "./components/PanelResizeCanvas";
 import PanelOutline from "./components/PanelOutline";
+import PanelDSL from "./components/PanelDSL";
 import components from "./components/ComponentBanner";
 import event from "./utils/SingleEventBus";
 
@@ -99,7 +100,9 @@ class App extends React.Component {
               title: "DSL 面板",
               align: "bottom",
               icon: "https://img.alicdn.com/imgextra/i3/O1CN01liE81S23dpeqriifl_!!6000000007279-2-tps-128-128.png",
-              content: <div>DSL</div>,
+              content: <PanelDSL />,
+              width: "500px",
+              boxType: "float",
             },
           ]}
           centerArea={[
