@@ -32,7 +32,7 @@ export default {
       description: "",
       supportVariable: true,
       value:
-        "https://img.alicdn.com/imgextra/i1/O1CN01CcVlF91ZlDb0Mp6Gr_!!6000000003234-0-tps-1100-641.jpg",
+        "https://img.alicdn.com/imgextra/i2/O1CN01tHYs5C1tPxXFBHCot_!!6000000005895-0-tps-1898-1080.jpg",
       setter: <UploaderSetter />,
       // display: "none",
     },

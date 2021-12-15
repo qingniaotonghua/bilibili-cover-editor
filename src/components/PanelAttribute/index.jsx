@@ -75,10 +75,6 @@ class PanelAttribute extends React.Component {
                 </div>
               </div>
             ))}
-          <div style={{ fontSize: 12, color: "#ccc" }}>
-            {dslInfo?.id &&
-              JSON.stringify(dslManager.getPageDSL(dslInfo.id), null, 2)}
-          </div>
         </div>
       </div>
     );

@@ -22,61 +22,11 @@ function renderStyle(schema) {
   return result;
 }
 
-// 替换 JS表达式
-function replaceJSStatement(value, context) {
-  if (!isJSStatement(value)) {
-    return value;
-  }
-
-  const _fn = new Function(`
-    return ${value.value};
-  `);
-
-  try {
-    return _fn.apply(context);
-  } catch (error) {
-    console.error(`数据状态 ${value.value} 未发现`);
-    return value.value;
-  }
-}
-
-// 替换 JS函数
-function replaceJSFx(value, context) {
-  if (!isJSFx(value)) {
-    return value;
-  }
-
-  const _fn = new Function(`
-    return (${value.value}).apply(this, arguments);
-  `);
-
-  return _fn.bind(context);
-}
-
-// 是否 JS 表达式
-function isJSStatement(value) {
-  return value?.type == "JSStatement";
-}
-
-// 是否 JS 函数
-function isJSFx(value) {
-  return value?.type == "JSFx";
-}
-
 // 解析props
 function parseProps(props, context) {
   const result = {};
 
   Object.keys(props).map((key) => {
-    // design 模式不需要这一块解析
-    // if (isJSStatement(props[key])) {
-    //   return (result[key] = replaceJSStatement(props[key], context));
-    // }
-
-    if (isJSFx(props[key])) {
-      return (result[key] = replaceJSFx(props[key], context));
-    }
-
     result[key] = props[key];
   });
 
@@ -130,7 +80,6 @@ function appendStyle({ id, css }) {
 
 export default {
   renderStyle,
-  replaceJSStatement,
   renderSchema,
   appendStyle,
 };

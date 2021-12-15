@@ -1,14 +1,7 @@
 import events from "events";
 
-let instance = null;
-
 class SingleEventBus {
   constructor() {
-    if (instance) {
-      return instance;
-    }
-
-    instance = this;
     this.event = new events();
   }
 

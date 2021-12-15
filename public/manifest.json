@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "B站 封面编辑",
+  "name": "bilibili 封面编辑器",
   "icons": [
     {
       "src": "favicon.ico",

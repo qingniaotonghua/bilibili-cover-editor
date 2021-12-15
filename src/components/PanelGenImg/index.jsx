@@ -22,9 +22,7 @@ class PanelGenImg extends React.Component {
   handleOpenDialog() {
     const { ctx } = this.props;
     const hideMsg = message.loading("生成中……");
-    const canvasDOM = document.getElementById(
-      ctx.get("canvas").containerId
-    );
+    const canvasDOM = document.getElementById(ctx.get("canvas").containerId);
 
     // bilibili pading
     const canvasWidth = canvasDOM.offsetWidth;
@@ -38,28 +36,32 @@ class PanelGenImg extends React.Component {
     canvasParentDom.style.boxSizing = "content-box";
 
     html2canvas(
-      document.getElementById(ctx.get("canvas").containerId)
-        .parentElement,
+      document.getElementById(ctx.get("canvas").containerId).parentElement,
       {
         allowTaint: true,
         useCORS: true,
         scale: 4,
       }
-    ).then((canvas) => {
-      canvasParentDom.style = "";
-      hideMsg();
-      this.setState(
-        {
-          visible: true,
-        },
-        () => {
-          this.refPreview.src = canvas.toDataURL();
+    )
+      .then((canvas) => {
+        canvasParentDom.style = "";
+        hideMsg();
+        this.setState(
+          {
+            visible: true,
+          },
+          () => {
+            this.refPreview.src = canvas.toDataURL();
 
-          this.refDownloadA.href = this.refPreview.src;
-          this.refDownloadA.download = Date.now() + ".png";
-        }
-      );
-    });
+            this.refDownloadA.href = this.refPreview.src;
+            this.refDownloadA.download = Date.now() + ".png";
+          }
+        );
+      })
+      .finally(() => {
+        // 触发 selectGhost 计算位置
+        window.document.body.click();
+      });
   }
 
   handleCloseDialog() {
