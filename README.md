@@ -1,1 +1,1 @@
-# BANNER-EDITOR
+# bilibili-cover-editor
