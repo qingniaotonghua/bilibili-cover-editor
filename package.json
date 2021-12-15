@@ -2,6 +2,7 @@
   "name": "banner-editor",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "antd": "^4.14.0",
